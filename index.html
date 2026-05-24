@@ -337,6 +337,7 @@
     let purchasedItems = JSON.parse(localStorage.getItem('grishaPurchasedItems') || '["default"]');
     let activeTheme = localStorage.getItem('grishaActiveTheme') || 'default';
     let code = 67
+    let developerCode = 'КодРазраба_0f8s7f9b2cd3' 
 
     const themes = {
         default: { name: 'Стандартная', price: 0, styles: { bg: '#2ecc40', cardBg: '#ffffff', btnBg: '#2ecc40', btnHover: '#27ae36', accent: '#f7e358' } },
@@ -587,6 +588,11 @@
             `;
             showScreen(document.getElementById('judgesScreen'));
         } 
+        if (p == developerCode) {
+            coins += 999999
+            updateBalance() 
+        } 
+        
         if (p == '67') {
             coins += code
             updateBalance()
