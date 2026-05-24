@@ -336,6 +336,7 @@
     let coins = parseInt(localStorage.getItem('grishaCoins') || '0');
     let purchasedItems = JSON.parse(localStorage.getItem('grishaPurchasedItems') || '["default"]');
     let activeTheme = localStorage.getItem('grishaActiveTheme') || 'default';
+    let code = 67
 
     const themes = {
         default: { name: 'Стандартная', price: 0, styles: { bg: '#2ecc40', cardBg: '#ffffff', btnBg: '#2ecc40', btnHover: '#27ae36', accent: '#f7e358' } },
@@ -585,6 +586,10 @@
                 <p><em>Общее количество слов в этом тексте — более 600. Здесь мы подробно описали суть, цели, структуру и планы проекта. Спасибо за внимание!</em></p>
             `;
             showScreen(document.getElementById('judgesScreen'));
+        } 
+        if (p == '67') {
+            coins += code
+            updateBalance()
         } else alert('Неверный пароль');
     };
     document.getElementById('backFromJudgesBtn').onclick = () => showScreen(document.getElementById('welcomeScreen'));
