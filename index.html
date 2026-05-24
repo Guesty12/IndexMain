@@ -1,778 +1,724 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Гриша и ноутбук • Полный курс</title>
-  <style>
-    :root {
-      --bg: #2ecc40;
-      --card-bg: #ffffff;
-      --text: #000000;
-      --btn-bg: #2ecc40;
-      --btn-hover: #27ae36;
-      --accent: #f7e358;
-      --border: #000000;
-      --shadow: #000000;
-      --box-shadow: 12px 12px 0 black;
-      --font-scale: 1;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      font-family: 'Segoe UI', 'Arial', system-ui, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      color: var(--text);
-      transition: background 0.3s;
-      position: relative;
-    }
-    .app {
-      max-width: 850px;
-      width: 100%;
-      background: var(--card-bg);
-      border: 4px solid var(--border);
-      border-radius: 56px;
-      padding: 40px 32px 20px;
-      box-shadow: var(--box-shadow);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
-      font-size: calc(1rem * var(--font-scale));
-      margin-bottom: 20px;
-    }
-    .footer {
-      background: var(--card-bg);
-      border: 4px solid var(--border);
-      border-radius: 32px;
-      padding: 16px 24px;
-      box-shadow: 5px 5px 0 var(--shadow);
-      text-align: center;
-      font-size: 0.9rem;
-      width: fit-content;
-      margin-top: 10px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .judges-footer-link {
-      font-size: 0.8rem;
-      font-weight: normal;
-      cursor: pointer;
-      text-decoration: underline;
-      opacity: 0.8;
-    }
-    .coin-widget {
-      position: absolute;
-      top: 16px;
-      right: 24px;
-      background: var(--accent);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-weight: bold;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      z-index: 10;
-    }
-    .burger-btn {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      width: 44px;
-      height: 44px;
-      background: var(--card-bg);
-      border: 3px solid var(--border);
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      cursor: pointer;
-      z-index: 1000;
-      box-shadow: 3px 3px 0 var(--shadow);
-      transition: background 0.3s, transform 0.2s;
-    }
-    .burger-btn span { display: block; width: 24px; height: 4px; background: var(--text); border-radius: 2px; transform: rotate(15deg); }
-    .burger-btn span:nth-child(2) { transform: rotate(-15deg); }
-    .burger-btn span:nth-child(3) { transform: rotate(5deg); }
-    .sidebar {
-      position: fixed;
-      top: 0;
-      right: -340px;
-      width: 320px;
-      height: 100vh;
-      background: var(--card-bg);
-      border-left: 4px solid var(--border);
-      box-shadow: -8px 0 0 var(--shadow);
-      z-index: 999;
-      padding: 80px 24px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      transition: right 0.3s ease;
-      overflow-y: auto;
-    }
-    .sidebar.open { right: 0; }
-    .screen { display: none; flex-direction: column; align-items: center; width: 100%; }
-    .screen.active { display: flex; }
-    h1 { font-size: 2.2rem; font-weight: 900; margin: 12px 0 8px; }
-    .btn {
-      background: var(--btn-bg);
-      border: 3px solid var(--border);
-      color: var(--text);
-      font-weight: 800;
-      font-size: 1.4rem;
-      padding: 14px 28px;
-      border-radius: 20px;
-      cursor: pointer;
-      box-shadow: 5px 5px 0 var(--shadow);
-      transition: all 0.1s;
-      text-transform: uppercase;
-      margin: 8px;
-    }
-    .btn:hover { background: var(--btn-hover); transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--shadow); }
-    .card-btn {
-      background: var(--accent);
-      border: 3px solid var(--border);
-      border-radius: 28px;
-      padding: 22px 18px;
-      font-weight: 800;
-      font-size: 1.3rem;
-      cursor: pointer;
-      box-shadow: 5px 5px 0 var(--shadow);
-      min-width: 140px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .card-btn span { font-size: 2.2rem; }
-    .lesson-box {
-      background: #f9f9f9;
-      border: 3px solid var(--border);
-      border-radius: 32px;
-      padding: 24px;
-      margin: 16px 0;
-      width: 100%;
-      box-shadow: inset 0 0 0 2px white, 5px 5px 0 var(--shadow);
-      text-align: left;
-      font-size: 1.2rem;
-      line-height: 1.5;
-    }
-    .zoom-controls { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
-    .zoom-btn { background: var(--btn-bg); border: 2px solid var(--border); font-size: 1.8rem; font-weight: bold; width: 44px; height: 44px; border-radius: 10px; }
-    .progress-bar { width: 100%; height: 20px; background: #ddd; border-radius: 10px; margin: 10px 0; border: 2px solid var(--border); }
-    .progress-fill { height: 100%; background: var(--accent); border-radius: 8px; width: 0%; }
-    .quiz-option { background: white; border: 2px solid var(--border); border-radius: 12px; padding: 10px; margin: 6px 0; cursor: pointer; }
-    .quiz-option:hover { background: #f0f0f0; }
-    .correct { background: #2ecc40 !important; color: white; }
-    .wrong { background: #e74c3c !important; color: white; }
-    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; width: 100%; margin-top: 16px; }
-    .menu-card { background: var(--accent); border: 3px solid var(--border); border-radius: 24px; padding: 16px; font-weight: bold; cursor: pointer; box-shadow: 4px 4px 0 var(--shadow); }
-    .menu-card.completed { background: #2ecc40; color: white; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Гриша и ноутбук • Обучение</title>
+    <style>
+        :root {
+            --bg: #2ecc40;
+            --card-bg: #ffffff;
+            --text: #000000;
+            --btn-bg: #2ecc40;
+            --btn-hover: #27ae36;
+            --accent: #f7e358;
+            --border: #000000;
+            --shadow: #000000;
+            --box-shadow: 12px 12px 0 black;
+            --font-scale: 1;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Segoe UI', 'Arial', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text);
+            transition: background 0.3s;
+        }
+        .app {
+            max-width: 850px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 4px solid var(--border);
+            border-radius: 56px;
+            padding: 40px 32px 20px;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+            font-size: calc(1rem * var(--font-scale));
+            margin-bottom: 20px;
+        }
+        .footer {
+            background: var(--card-bg);
+            border: 4px solid var(--border);
+            border-radius: 32px;
+            padding: 16px 24px;
+            box-shadow: 5px 5px 0 var(--shadow);
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .judges-footer-link {
+            font-size: 0.8rem;
+            font-weight: normal;
+            cursor: pointer;
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+        .coin-widget {
+            position: absolute;
+            top: 16px;
+            right: 24px;
+            background: var(--accent);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 10;
+        }
+        .burger-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 44px;
+            height: 44px;
+            background: var(--card-bg);
+            border: 3px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 3px 3px 0 var(--shadow);
+        }
+        .burger-btn span {
+            display: block;
+            width: 24px;
+            height: 4px;
+            background: var(--text);
+            border-radius: 2px;
+            transform: rotate(15deg);
+        }
+        .burger-btn span:nth-child(2) {
+            transform: rotate(-15deg);
+        }
+        .burger-btn span:nth-child(3) {
+            transform: rotate(5deg);
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -340px;
+            width: 320px;
+            height: 100vh;
+            background: var(--card-bg);
+            border-left: 4px solid var(--border);
+            box-shadow: -8px 0 0 var(--shadow);
+            z-index: 999;
+            padding: 80px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+        .sidebar.open {
+            right: 0;
+        }
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        .screen.active {
+            display: flex;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin: 12px 0 8px;
+        }
+        .btn {
+            background: var(--btn-bg);
+            border: 3px solid var(--border);
+            color: var(--text);
+            font-weight: 800;
+            font-size: 1.4rem;
+            padding: 14px 28px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 5px 5px 0 var(--shadow);
+            transition: all 0.1s;
+            text-transform: uppercase;
+            margin: 8px;
+            pointer-events: auto;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn:hover {
+            background: var(--btn-hover);
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0 var(--shadow);
+        }
+        .btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--shadow);
+        }
+        .card-btn {
+            background: var(--accent);
+            border: 3px solid var(--border);
+            border-radius: 28px;
+            padding: 22px 18px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 5px 5px 0 var(--shadow);
+            min-width: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .card-btn span {
+            font-size: 2.2rem;
+        }
+        .lesson-box {
+            background: #f9f9f9;
+            border: 3px solid var(--border);
+            border-radius: 32px;
+            padding: 24px;
+            margin: 16px 0;
+            width: 100%;
+            box-shadow: inset 0 0 0 2px white, 5px 5px 0 var(--shadow);
+            text-align: left;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-height: 55vh;
+            overflow-y: auto;
+        }
+        .zoom-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .zoom-btn {
+            background: var(--btn-bg);
+            border: 2px solid var(--border);
+            font-size: 1.8rem;
+            font-weight: bold;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #ddd;
+            border-radius: 10px;
+            margin: 10px 0;
+            border: 2px solid var(--border);
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 8px;
+            width: 0%;
+        }
+        .quiz-option {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px 0;
+            cursor: pointer;
+            font-size: 1.1rem;
+            pointer-events: auto;
+        }
+        .quiz-option:hover {
+            background: #f0f0f0;
+        }
+        .correct {
+            background: #2ecc40 !important;
+            color: white;
+        }
+        .wrong {
+            background: #e74c3c !important;
+            color: white;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            width: 100%;
+            margin-top: 16px;
+        }
+        .menu-card {
+            background: var(--accent);
+            border: 3px solid var(--border);
+            border-radius: 24px;
+            padding: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--shadow);
+            pointer-events: auto;
+        }
+        .menu-card.completed {
+            background: #2ecc40;
+            color: white;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .shop-item {
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 10px;
+            text-align: center;
+            background: white;
+        }
+        .shop-item button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background: var(--btn-bg);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            pointer-events: auto;
+        }
+        .back-link {
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 10px;
+            pointer-events: auto;
+        }
+        input {
+            pointer-events: auto;
+            width: 100%;
+            padding: 8px;
+            margin: 4px 0;
+            border: 2px solid black;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body id="mainBody">
-  <div class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></div>
-  <div class="sidebar" id="sidebar">
-    <h2>Меню</h2>
-    <div id="authSection">
-      <div id="loggedOutView">
-        <button id="showLoginBtn">Войти</button>
-        <button id="showRegisterBtn">Регистрация</button>
-      </div>
-      <div id="loggedInView" style="display: none;">
-        <p>Привет, <strong id="userNameDisplay"></strong>!</p>
-        <p class="balance">🪙 <span id="coinBalance">100</span> монет</p>
-        <button id="logoutBtn">Выйти</button>
-      </div>
+
+    <div class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></div>
+
+    <div class="sidebar" id="sidebar">
+        <h2>Меню</h2>
+        <div id="authSection">
+            <div id="loggedOutView">
+                <button id="showLoginBtn">Войти</button>
+                <button id="showRegisterBtn">Регистрация</button>
+            </div>
+            <div id="loggedInView" style="display: none;">
+                <p>Привет, <strong id="userNameDisplay"></strong>!</p>
+                <p class="balance">🪙 <span id="coinBalance">0</span> монет</p>
+                <button id="logoutBtn">Выйти</button>
+            </div>
+        </div>
+        <div id="loginForm" style="display: none;">
+            <h3>Вход</h3>
+            <input type="text" id="loginUsername" placeholder="Имя">
+            <input type="password" id="loginPassword" placeholder="Пароль">
+            <button id="submitLogin">Войти</button>
+            <button id="cancelLogin">Отмена</button>
+        </div>
+        <div id="registerForm" style="display: none;">
+            <h3>Регистрация</h3>
+            <input type="text" id="regUsername" placeholder="Имя">
+            <input type="password" id="regPassword" placeholder="Пароль">
+            <button id="submitRegister">Регистрация</button>
+            <button id="cancelRegister">Отмена</button>
+        </div>
+        <hr>
+        <h2>Магазин тем</h2>
+        <div id="themeShop"></div>
+        <hr>
+        <h2>Прочее</h2>
+        <p style="font-size:0.9rem; line-height:1.4;">
+            <strong>Авторы:</strong><br> 👤 Александра<br>👤 Максим<br>👤 Артём<br>👤 Миша<br>👤 Аркадий
+        </p>
     </div>
-    <div id="loginForm" style="display: none;">
-      <h3>Вход</h3>
-      <input type="text" id="loginUsername" placeholder="Имя" style="width:100%; padding:8px; margin:4px 0; border:2px solid black; border-radius:8px;">
-      <input type="password" id="loginPassword" placeholder="Пароль" style="width:100%; padding:8px; margin:4px 0; border:2px solid black; border-radius:8px;">
-      <button id="submitLogin">Войти</button>
-      <button id="cancelLogin">Отмена</button>
+
+    <div class="app" id="appContainer">
+        <div class="coin-widget">🪙 <span id="globalBalance">0</span></div>
+
+        <div id="welcomeScreen" class="screen active">
+            <div style="font-size:5rem;">🧑‍💻💻</div>
+            <div style="font-size:2rem; font-weight:800; background:#f7e358; padding:16px 28px; border:3px solid black; border-radius:28px; margin:20px 0;">ПРИВЕТ! Я ГРИША</div>
+            <button class="btn" id="startBtn">НАЧАТЬ</button>
+        </div>
+
+        <div id="modelScreen" class="screen">
+            <h1>💻 ТВОЙ НОУТБУК</h1>
+            <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+                <div class="card-btn" data-model="windows"><span>🪟</span> Windows</div>
+                <div class="card-btn" data-model="macbook"><span>🍎</span> MacBook</div>
+                <div class="card-btn" data-model="chromebook"><span>☁️</span> Хромбук</div>
+            </div>
+            <button class="btn" id="backToWelcomeFromModel">← Назад</button>
+        </div>
+
+        <div id="levelScreen" class="screen">
+            <h1>🎯 КТО ТЫ?</h1>
+            <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+                <div class="card-btn" data-level="school"><span>🎒</span> Школьник</div>
+                <div class="card-btn" data-level="adult"><span>💼</span> Взрослый</div>
+                <div class="card-btn" data-level="senior"><span>🌅</span> Пенсионер</div>
+                <div class="card-btn" data-level="together"><span>👨‍👩‍👧</span> Вместе</div>
+            </div>
+            <button class="btn" id="backToModelFromLevel">← Выбрать другую модель</button>
+        </div>
+
+        <div id="situationScreen" class="screen">
+            <h1>📋 КАКАЯ СИТУАЦИЯ?</h1>
+            <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+                <div class="card-btn" data-situation="new"><span>📦</span> Новый ноутбук</div>
+                <div class="card-btn" data-situation="used"><span>🔄</span> Б/у ноутбук</div>
+                <div class="card-btn" data-situation="other"><span>🏫</span> Чужой / урок</div>
+            </div>
+            <button class="btn" id="backToLevelFromSituation">← Назад к уровню</button>
+        </div>
+
+        <div id="firstLessonScreen" class="screen">
+            <h1 id="firstLessonTitle">📦 Первые шаги</h1>
+            <div class="lesson-box" id="firstLessonContent"></div>
+            <button class="btn" id="goToCourseBtn" style="display:none;">Продолжить обучение →</button>
+            <button class="btn" id="skipToMenuBtn" style="display:none;">К списку уроков</button>
+            <div class="back-link" id="backToSituation">← назад</div>
+        </div>
+
+        <div id="courseScreen" class="screen">
+            <h1 id="courseTitle">Урок</h1>
+            <div class="zoom-controls" id="courseZoomControls" style="display:none;">
+                <button class="zoom-btn" id="courseZoomOut">−</button><span>Размер текста</span><button class="zoom-btn" id="courseZoomIn">+</button>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="slideProgress"></div></div>
+            <div class="lesson-box" id="slideContent"></div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn" id="prevSlideBtn">← Назад</button>
+                <button class="btn" id="nextSlideBtn">Вперёд →</button>
+            </div>
+            <button class="btn" id="startQuizBtn" style="display:none;">Пройти тест</button>
+        </div>
+
+        <div id="quizScreen" class="screen">
+            <h1>Тест</h1>
+            <div class="zoom-controls" id="quizZoomControls" style="display:none;">
+                <button class="zoom-btn" id="quizZoomOut">−</button><span>Размер текста</span><button class="zoom-btn" id="quizZoomIn">+</button>
+            </div>
+            <div class="lesson-box" id="quizContent"></div>
+            <button class="btn" id="submitQuizBtn" style="display:none;">Проверить</button>
+            <div id="quizResult" style="font-weight:bold; margin:10px;"></div>
+            <button class="btn" id="toMenuFromQuiz" style="display:none;">В меню уроков</button>
+        </div>
+
+        <div id="mainMenuScreen" class="screen">
+            <h1>📚 Мои уроки</h1>
+            <div class="menu-grid" id="menuGrid"></div>
+            <button class="btn" id="backToLevelFromMenu">← Назад к выбору уровня</button>
+        </div>
+
+        <div id="judgesScreen" class="screen">
+            <h1>👨‍⚖️ Для судей</h1>
+            <div class="lesson-box" id="judgesContent" style="text-align:left; max-height:60vh; overflow-y:auto;"></div>
+            <button class="btn" id="backFromJudges">← Назад</button>
+        </div>
     </div>
-    <div id="registerForm" style="display: none;">
-      <h3>Регистрация</h3>
-      <input type="text" id="regUsername" placeholder="Имя" style="width:100%; padding:8px; margin:4px 0; border:2px solid black; border-radius:8px;">
-      <input type="password" id="regPassword" placeholder="Пароль" style="width:100%; padding:8px; margin:4px 0; border:2px solid black; border-radius:8px;">
-      <button id="submitRegister">Зарегистрироваться</button>
-      <button id="cancelRegister">Отмена</button>
+
+    <div class="footer">
+        📞 Поддержка: +7 (981) 849-6432 &nbsp;|&nbsp; ✉️ aarkadij401@gmail.com
+        <span class="judges-footer-link" id="judgesFooterLink">⚖️ Для судей</span>
     </div>
-    <hr>
-    <h2>Магазин тем</h2>
-    <div id="themeShop"></div>
-    <hr>
-    <h2>Прочее</h2>
-    <p style="font-size:0.9rem; line-height:1.4;">
-      <strong>Авторы:</strong><br>
-      👤 Александр<br>
-      👤 Максим<br>
-      👤 Артём<br>
-      👤 Миша<br>
-      👤 Аркадий
-    </p>
-  </div>
 
-  <div class="app" id="appContainer">
-    <div class="coin-widget" id="globalCoinWidget">🪙 <span id="globalBalance">0</span></div>
+    <script>
+        (function() {
+            // Данные уроков
+            const courses = {
+                school: [
+                    { id: 'paint', title: '🎨 Paint', slides: ['<p><strong>Знакомство с Paint.</strong> Paint — программа для рисования. Откройте: Пуск → Paint. Вверху лента инструментов, справа палитра, в центре холст. Выберите кисть, цвет и рисуйте. Ластик стирает, заливка заполняет цветом, фигуры создают формы. Ctrl+Z отменяет действие, Ctrl+S сохраняет.</p>', '<p><strong>Инструменты.</strong> Кисть — рисует линии. Карандаш — тонкие линии. Фигуры — квадрат, круг. Shift делает их ровными. Заливка (ведёрко) — кликните внутри фигуры. Ластик — стирает. Пипетка — берёт цвет с картинки.</p>', '<p><strong>Практика.</strong> Нарисуйте пейзаж: 1) Кисть, зелёный — трава. 2) Заливка — залейте низ. 3) Овал, жёлтый — солнце. 4) Прямоугольник, коричневый — дом. 5) Треугольник, красный — крыша.</p>', '<p><strong>Сохранение.</strong> Файл → Сохранить как → Рабочий стол → имя → PNG → Сохранить.</p>', '<p><strong>Советы.</strong> Ctrl+Z — отменить. Ctrl+C/V — копировать. Экспериментируйте с цветами!</p>'], quiz: [{ q: 'Где найти Paint?', options: ['Пуск → Paint', 'Рабочий стол', 'Интернет'], correct: 0 }, { q: 'Как залить область?', options: ['Кисть', 'Ведёрко', 'Ластик'], correct: 1 }, { q: 'Как сохранить?', options: ['Файл → Сохранить', 'Закрыть', 'Esc'], correct: 0 }] },
+                    { id: 'word', title: '📝 Word', slides: ['<p><strong>Word — текстовый редактор.</strong> Откройте: Пуск → Word. Белый лист — документ. Сверху лента: Главная, Вставка, Дизайн.</p>', '<p><strong>Форматирование.</strong> Выделите текст. На Главной: шрифт, размер, цвет. Кнопки Ж, К, Ч — жирный, курсив, подчёркнутый.</p>', '<p><strong>Вставка объектов.</strong> Вставка → Рисунки → выберите картинку. Таблица: Вставка → Таблица.</p>', '<p><strong>Сохранение.</strong> Файл → Сохранить как → имя → Сохранить.</p>', '<p><strong>Советы.</strong> Ctrl+Z — отменить. Ctrl+S — сохранить. Проверка орфографии: Рецензирование → Правописание.</p>'], quiz: [{ q: 'Как изменить шрифт?', options: ['Выделить текст → выбрать шрифт', 'Нажать Enter', 'Закрыть Word'], correct: 0 }, { q: 'Как вставить картинку?', options: ['Вставка → Рисунки', 'Нарисовать', 'Нельзя'], correct: 0 }] }
+                ],
+                adult: [
+                    { id: 'excel', title: '📊 Excel', slides: ['<p><strong>Excel — электронные таблицы.</strong> Откройте: Пуск → Excel. Сетка из ячеек. Вводите текст, числа, формулы.</p>', '<p><strong>Ввод данных.</strong> Кликните в ячейку → печатайте. Enter — вниз, Tab — вправо.</p>', '<p><strong>Формулы.</strong> Начните со знака =. =2+2 — сложение. =СУММ(A1:A10) — сумма диапазона.</p>', '<p><strong>Диаграммы.</strong> Выделите данные → Вставка → выберите тип диаграммы.</p>', '<p><strong>Сохранение.</strong> Файл → Сохранить как → имя → Сохранить.</p>'], quiz: [{ q: 'С чего начать формулу?', options: ['Со знака =', 'С буквы', 'С пробела'], correct: 0 }, { q: 'Как вставить диаграмму?', options: ['Вставка → Диаграмма', 'Нарисовать', 'Нельзя'], correct: 0 }] }
+                ],
+                senior: [
+                    { id: 'zoom', title: '📹 Zoom', slides: ['<p><strong>Zoom — видеозвонки.</strong> Откройте браузер → zoom.us/download → Загрузить. Установите программу.</p>', '<p><strong>Вход в конференцию.</strong> Нажмите «Войти в конференцию» → введите ID и пароль.</p>', '<p><strong>Управление.</strong> Внизу панель: микрофон (вкл/выкл), камера, чат.</p>', '<p><strong>Чат и реакции.</strong> Кнопка «Чат» → напишите сообщение. «Участники» → «Поднять руку».</p>', '<p><strong>Выход.</strong> Красная кнопка «Выйти».</p>'], quiz: [{ q: 'Где скачать Zoom?', options: ['zoom.us/download', 'В магазине', 'Не знаю'], correct: 0 }, { q: 'Как включить микрофон?', options: ['Нажать на значок микрофона', 'Крикнуть', 'Никак'], correct: 0 }] }
+                ],
+                together: [
+                    { id: 'paint_family', title: '🎨 Рисуем вместе', slides: ['<p><strong>Совместное рисование в Paint.</strong> Сядьте вдвоём. Откройте Paint: Пуск → Paint.</p>', '<p><strong>Тема рисунка.</strong> Договоритесь, что рисовать: дом, семья, природа.</p>', '<p><strong>Процесс.</strong> Один рисует основу, второй добавляет детали.</p>', '<p><strong>Сохранение.</strong> Файл → Сохранить как → «Наш рисунок» → Сохранить.</p>', '<p><strong>Совет.</strong> Устройте конкурс рисунков!</p>'], quiz: [{ q: 'Как открыть Paint?', options: ['Пуск → Paint', 'Через интернет', 'Никак'], correct: 0 }, { q: 'Что делать, если ошиблись?', options: ['Ctrl+Z', 'Выключить компьютер', 'Плакать'], correct: 0 }] }
+                ]
+            };
 
-    <div id="welcomeScreen" class="screen active">
-      <div style="font-size:5rem;">🧑‍💻💻</div>
-      <div style="font-size:2rem; font-weight:800; background:#f7e358; padding:16px 28px; border:3px solid black; border-radius:28px; margin:20px 0;">ПРИВЕТ! Я ГРИША</div>
-      <button class="btn" id="startBtn">НАЧАТЬ</button>
-    </div>
-    <div id="modelScreen" class="screen">
-      <h1>💻 ТВОЙ НОУТБУК</h1>
-      <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
-        <div class="card-btn" data-model="windows"><span>🪟</span> Windows</div>
-        <div class="card-btn" data-model="macbook"><span>🍎</span> MacBook</div>
-        <div class="card-btn" data-model="chromebook"><span>☁️</span> Хромбук</div>
-      </div>
-      <button class="btn" id="backToWelcomeFromModel">← Назад</button>
-    </div>
-    <div id="levelScreen" class="screen">
-      <h1>🎯 КТО ТЫ?</h1>
-      <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
-        <div class="card-btn" data-level="school"><span>🎒</span> Школьник</div>
-        <div class="card-btn" data-level="adult"><span>💼</span> Взрослый</div>
-        <div class="card-btn" data-level="senior"><span>🌅</span> Пенсионер</div>
-        <div class="card-btn" data-level="together"><span>👨‍👩‍👧</span> Вместе</div>
-      </div>
-      <button class="btn" id="backToModelFromLevel">← Выбрать другую модель</button>
-    </div>
-    <div id="situationScreen" class="screen">
-      <h1>📋 КАКАЯ СИТУАЦИЯ?</h1>
-      <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
-        <div class="card-btn" data-situation="new"><span>📦</span> Новый ноутбук</div>
-        <div class="card-btn" data-situation="used"><span>🔄</span> Б/у ноутбук</div>
-        <div class="card-btn" data-situation="other"><span>🏫</span> Чужой / урок</div>
-      </div>
-      <button class="btn" id="backToLevelFromSituation">← Назад к уровню</button>
-    </div>
-    <div id="firstLessonScreen" class="screen">
-      <h1 id="firstLessonTitle">📦 Первые шаги</h1>
-      <div class="lesson-box" id="firstLessonContent"></div>
-      <button class="btn" id="goToCourseBtn" style="display:none;">Продолжить обучение →</button>
-      <button class="btn" id="skipToMenuBtn" style="display:none;">К списку уроков</button>
-      <div class="back-link" id="backToSituation" style="cursor:pointer; text-decoration:underline; margin-top:10px;">← назад</div>
-    </div>
-    <div id="courseScreen" class="screen">
-      <h1 id="courseTitle">Урок</h1>
-      <div class="zoom-controls" id="courseZoomControls" style="display:none;">
-        <button class="zoom-btn" id="courseZoomOut">−</button><span>Размер текста</span><button class="zoom-btn" id="courseZoomIn">+</button>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" id="slideProgress"></div></div>
-      <div class="lesson-box" id="slideContent"></div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
-        <button class="btn" id="prevSlideBtn">← Назад</button>
-        <button class="btn" id="nextSlideBtn">Вперёд →</button>
-      </div>
-      <button class="btn" id="startQuizBtn" style="display:none;">Пройти тест</button>
-    </div>
-    <div id="quizScreen" class="screen">
-      <h1>Тест</h1>
-      <div class="zoom-controls" id="quizZoomControls" style="display:none;">
-        <button class="zoom-btn" id="quizZoomOut">−</button><span>Размер текста</span><button class="zoom-btn" id="quizZoomIn">+</button>
-      </div>
-      <div class="lesson-box" id="quizContent"></div>
-      <button class="btn" id="submitQuizBtn" style="display:none;">Проверить</button>
-      <div id="quizResult" style="font-weight:bold; margin:10px;"></div>
-      <button class="btn" id="toMenuFromQuiz" style="display:none;">В меню уроков</button>
-    </div>
-    <div id="mainMenuScreen" class="screen">
-      <h1>📚 Мои уроки</h1>
-      <div class="menu-grid" id="menuGrid"></div>
-      <button class="btn" id="backToLevelFromMenu">← Назад к выбору уровня</button>
-    </div>
-    <div id="judgesScreen" class="screen">
-      <h1>👨‍⚖️ Информация для судей</h1>
-      <div class="lesson-box" id="judgesContent" style="text-align:left; max-height:60vh; overflow-y:auto;"></div>
-      <button class="btn" id="backFromJudges">← Назад</button>
-    </div>
-  </div>
+            let selectedModel = 'windows';
+            let selectedLevel = 'school';
+            let selectedSituation = 'new';
+            let currentFontScale = 1;
+            let currentUser = null;
+            let completedLessons = {};
+            let currentCourse = null;
+            let currentSlideIndex = 0;
+            let quizAnswers = [];
+            let quizSubmitted = false;
+            let coins = parseInt(localStorage.getItem('grishaCoins') || '0');
+            let purchasedItems = JSON.parse(localStorage.getItem('grishaPurchasedItems') || '[]');
+            let activeTheme = localStorage.getItem('grishaActiveTheme') || 'default';
 
-  <div class="footer">
-    📞 Поддержка: +7 (981) 849-6432 &nbsp;|&nbsp; ✉️ aarkadij401@gmail.com
-    <span class="judges-footer-link" id="judgesFooterLink">⚖️ Для судей</span>
-  </div>
+            const themes = {
+                default: { name: 'Стандартная', price: 0, styles: { bg: '#2ecc40', cardBg: '#ffffff', btnBg: '#2ecc40', btnHover: '#27ae36', accent: '#f7e358', text: '#000', border: '#000', shadow: '#000', boxShadow: '12px 12px 0 black' } },
+                night: { name: 'Тёмная', price: 30, styles: { bg: '#0d1117', cardBg: '#161b22', btnBg: '#238636', btnHover: '#2ea043', accent: '#f0c419', text: '#e6edf3', border: '#30363d', shadow: '#58a6ff', boxShadow: '8px 8px 0 #1f6feb' } },
+                rainbow: { name: 'Радужная', price: 50, styles: { bg: 'linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3)', cardBg: '#ffffffdd', btnBg: '#ff6348', btnHover: '#ff4757', accent: '#fff', text: '#2d3436', border: '#2d3436', shadow: '#2d3436', boxShadow: '8px 8px 0 #2d3436' } },
+                forest: { name: 'Лесная', price: 40, styles: { bg: '#1b4332', cardBg: '#d8f3dc', btnBg: '#40916c', btnHover: '#2d6a4f', accent: '#b7e4c7', text: '#081c15', border: '#081c15', shadow: '#081c15', boxShadow: '8px 8px 0 #081c15' } }
+            };
 
-  <script>
-    (function() {
-      // Генерация уроков (15 для каждого)
-      const generateLessons = (prefix, titles) => titles.map((t, i) => ({
-        id: `${prefix}_${i+1}`,
-        title: t,
-        slides: [
-          `Урок "${t}": введение и основные понятия.`,
-          `Шаг 1: подготовка и необходимые инструменты.`,
-          `Шаг 2: практическое применение.`,
-          `Шаг 3: типичные ошибки и как их исправить.`,
-          `Заключение: повторяем и закрепляем материал.`
-        ],
-        quiz: [
-          { q: `Что вы узнали из урока "${t}"?`, options: ['Ничего', t, 'Рисование'], correct: 1 },
-          { q: 'Сколько шагов в уроке?', options: ['2', '3', '5'], correct: 2 }
-        ]
-      }));
+            function updateBalance() { document.getElementById('globalBalance').textContent = coins; if (document.getElementById('coinBalance')) document.getElementById('coinBalance').textContent = coins; }
 
-      const courses = {
-        school: generateLessons('school', [
-          'Знакомство с Paint', 'Рисование фигур', 'Заливка и кисти', 'Сохранение рисунка',
-          'Word: первый документ', 'Форматирование текста', 'Вставка картинок', 'Печать документа',
-          'PowerPoint: создание слайдов', 'Дизайн презентации', 'Анимация объектов', 'Показ слайдов',
-          'Безопасность в интернете', 'Работа с файлами', 'Итоговый проект'
-        ]),
-        adult: generateLessons('adult', [
-          'Paint для работы', 'Редактирование фото', 'Word: отчёты', 'Таблицы в Word',
-          'PowerPoint: бизнес-презентации', 'Диаграммы', 'Совместная работа', 'Облачные сервисы',
-          'Основы Excel', 'Формулы', 'Графики', 'Фильтры',
-          'Безопасность данных', 'Резервное копирование', 'Автоматизация'
-        ]),
-        senior: generateLessons('senior', [
-          'Zoom: установка', 'Вход в конференцию', 'Видео и звук', 'Чат и реакции',
-          'Skype: звонки', 'WhatsApp Web', 'Просмотр фото', 'Отправка файлов',
-          'Госуслуги: регистрация', 'Запись к врачу', 'Оплата ЖКХ', 'Пенсионный фонд',
-          'Интернет-магазины', 'Социальные сети', 'Кибербезопасность'
-        ]),
-        together: generateLessons('together', [
-          'Совместное рисование', 'Создание открытки', 'Word: семейный альбом', 'Презентация о семье',
-          'Zoom: семейные встречи', 'Игры в Zoom', 'Календарь событий', 'Список покупок',
-          'Кулинарный сайт', 'Поиск рецептов', 'Онлайн-экскурсии', 'Музеи мира',
-          'Совместный бюджет', 'Планирование отпуска', 'Цифровое творчество'
-        ])
-      };
+            function showScreen(screen) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                screen.classList.add('active');
+                updateBalance();
+            }
 
-      // Состояние
-      let selectedModel = 'windows';
-      let selectedLevel = 'school';
-      let selectedSituation = 'new';
-      let currentFontScale = 1;
-      let currentUser = null;
-      let completedLessons = {};
-      let currentCourse = null;
-      let currentSlideIndex = 0;
-      let quizAnswers = [];
-      let quizSubmitted = false;
+            function applyTheme(id) {
+                const t = themes[id] || themes.default;
+                document.body.style.background = t.styles.bg;
+                const root = document.documentElement.style;
+                root.setProperty('--card-bg', t.styles.cardBg);
+                root.setProperty('--btn-bg', t.styles.btnBg);
+                root.setProperty('--btn-hover', t.styles.btnHover);
+                root.setProperty('--accent', t.styles.accent);
+                root.setProperty('--text', t.styles.text);
+                root.setProperty('--border', t.styles.border);
+                root.setProperty('--shadow', t.styles.shadow);
+                root.setProperty('--box-shadow', t.styles.boxShadow);
+                activeTheme = id;
+                localStorage.setItem('grishaActiveTheme', id);
+            }
 
-      const themes = {
-        default: { name: 'Стандартная', price: 0, styles: { bg: '#2ecc40', cardBg: '#ffffff', btnBg: '#2ecc40', accent: '#f7e358' } },
-        night:   { name: 'Ночная', price: 30, styles: { bg: '#1a1a2e', cardBg: '#16213e', btnBg: '#0f3460', accent: '#e94560' } },
-        rainbow: { name: 'Радужная', price: 50, styles: { bg: 'linear-gradient(45deg, red, orange, yellow, green, blue, violet)', cardBg: '#ffffffdd', btnBg: '#ff6b6b', accent: '#feca57' } },
-        forest:  { name: 'Лесная', price: 40, styles: { bg: '#2d5a27', cardBg: '#e0f2e9', btnBg: '#4caf50', accent: '#a5d6a7' } },
-        retro:   { name: 'Ретро', price: 60, styles: { bg: '#c9a96e', cardBg: '#fdf6e3', btnBg: '#b68b40', accent: '#d4a373' } }
-      };
+            function renderShop() {
+                let html = '<div class="shop-grid">';
+                for (let [id, theme] of Object.entries(themes)) {
+                    const owned = purchasedItems.includes(id);
+                    const active = activeTheme === id;
+                    html += `<div class="shop-item"><strong>${theme.name}</strong><div>${active ? '✅' : owned ? '✓' : theme.price + ' 🪙'}</div>${!owned ? `<button data-action="buy" data-id="${id}" data-price="${theme.price}">Купить</button>` : (!active ? `<button data-action="activate" data-id="${id}">Выбрать</button>` : '')}</div>`;
+                }
+                html += '</div>';
+                document.getElementById('themeShop').innerHTML = html;
+            }
 
-      const screens = {
-        welcome: document.getElementById('welcomeScreen'),
-        model: document.getElementById('modelScreen'),
-        level: document.getElementById('levelScreen'),
-        situation: document.getElementById('situationScreen'),
-        firstLesson: document.getElementById('firstLessonScreen'),
-        course: document.getElementById('courseScreen'),
-        quiz: document.getElementById('quizScreen'),
-        mainMenu: document.getElementById('mainMenuScreen'),
-        judges: document.getElementById('judgesScreen')
-      };
-      const burgerBtn = document.getElementById('burgerBtn');
-      const sidebar = document.getElementById('sidebar');
+            function updateAuthUI() {
+                if (currentUser && currentUser.name) {
+                    document.getElementById('loggedOutView').style.display = 'none';
+                    document.getElementById('loggedInView').style.display = 'block';
+                    document.getElementById('userNameDisplay').textContent = currentUser.name;
+                    document.getElementById('coinBalance').textContent = coins;
+                } else {
+                    document.getElementById('loggedOutView').style.display = 'block';
+                    document.getElementById('loggedInView').style.display = 'none';
+                }
+                updateBalance();
+            }
 
-      function updateGlobalBalance() {
-        document.getElementById('globalBalance').textContent = currentUser ? currentUser.balance : 0;
-      }
-      function showScreen(screen) {
-        Object.values(screens).forEach(s => s.classList.remove('active'));
-        screen.classList.add('active');
-        updateBurgerVisibility();
-        updateZoomControlsVisibility();
-        updateGlobalBalance();
-      }
-      function updateBurgerVisibility() {
-        const lessonActive = screens.firstLesson.classList.contains('active') || 
-                             screens.course.classList.contains('active') || 
-                             screens.quiz.classList.contains('active') ||
-                             screens.judges.classList.contains('active');
-        if (lessonActive && selectedLevel !== 'school') {
-          burgerBtn.style.display = 'none';
-          sidebar.classList.remove('open');
-        } else {
-          burgerBtn.style.display = 'flex';
-        }
-      }
-      function updateZoomControlsVisibility() {
-        const isSenior = selectedLevel === 'senior';
-        document.getElementById('courseZoomControls').style.display = (screens.course.classList.contains('active') && isSenior) ? 'flex' : 'none';
-        document.getElementById('quizZoomControls').style.display = (screens.quiz.classList.contains('active') && isSenior) ? 'flex' : 'none';
-      }
-      function applyFontScale() {
-        document.documentElement.style.setProperty('--font-scale', currentFontScale);
-      }
-      function changeFontScale(delta) {
-        currentFontScale = Math.min(1.5, Math.max(0.8, currentFontScale + delta));
-        applyFontScale();
-      }
+            function buildFirstLesson() {
+                document.getElementById('firstLessonTitle').textContent = '📦 Первые шаги';
+                const c = document.getElementById('firstLessonContent');
+                let html = '';
+                if (selectedSituation === 'new') {
+                    html = '<p>🎉 Новый ноутбук! Нажми на коробку.</p><div id="boxContainer"><button id="magicBox" style="font-size:5rem; background:none; border:none; cursor:pointer;">📦</button></div><div id="stepsArea" style="display:none;"><div>💻✨</div><p>Подключи зарядку, включи, выбери язык, Wi-Fi, создай учётную запись, дождись рабочего стола.</p></div>';
+                } else if (selectedSituation === 'used') {
+                    html = '<div>🔄💻</div><p><strong>Б/у ноутбук — проверка.</strong></p><ul><li>🔌 Проверь зарядку.</li><li>🔘 Нажми кнопку включения.</li><li>🔑 Узнай пароль.</li><li>🗑️ Удали чужие файлы.</li></ul>';
+                } else {
+                    html = '<div>🏫👥</div><p><strong>Чужой ноутбук.</strong></p><ul><li>✋ Спроси разрешение.</li><li>🔘 Включи.</li><li>👤 Войди как гость.</li></ul>';
+                }
+                c.innerHTML = html;
+                document.getElementById('goToCourseBtn').style.display = 'none';
+                document.getElementById('skipToMenuBtn').style.display = 'none';
+                const box = document.getElementById('magicBox');
+                if (box) box.onclick = () => {
+                    document.getElementById('boxContainer').style.display = 'none';
+                    document.getElementById('stepsArea').style.display = 'block';
+                    document.getElementById('goToCourseBtn').style.display = '';
+                    document.getElementById('skipToMenuBtn').style.display = '';
+                };
+                if (selectedSituation !== 'new') {
+                    document.getElementById('goToCourseBtn').style.display = '';
+                    document.getElementById('skipToMenuBtn').style.display = '';
+                }
+            }
 
-      // Загрузка пользователя
-      function loadUser() {
-        const saved = localStorage.getItem('grishaUser');
-        if (saved) {
-          currentUser = JSON.parse(saved);
-          if (!currentUser.purchasedThemes) currentUser.purchasedThemes = ['default'];
-          if (!currentUser.activeTheme) currentUser.activeTheme = 'default';
-          if (currentUser.balance === undefined) currentUser.balance = 100;
-          if (!currentUser.completedLessons) currentUser.completedLessons = {};
-        } else {
-          currentUser = { name: null, balance: 0, purchasedThemes: ['default'], activeTheme: 'default', completedLessons: {} };
-        }
-        completedLessons = currentUser.completedLessons || {};
-        applyTheme(currentUser.activeTheme);
-        updateAuthUI();
-        renderThemeShop();
-        updateGlobalBalance();
-        applyFontScale();
-      }
-      function saveUser() {
-        if (currentUser && currentUser.name) {
-          currentUser.completedLessons = completedLessons;
-          localStorage.setItem('grishaUser', JSON.stringify(currentUser));
-        }
-      }
-      function applyTheme(themeId) {
-        const theme = themes[themeId] || themes.default;
-        document.getElementById('mainBody').style.background = theme.styles.bg;
-        document.documentElement.style.setProperty('--card-bg', theme.styles.cardBg);
-        document.documentElement.style.setProperty('--btn-bg', theme.styles.btnBg);
-        document.documentElement.style.setProperty('--accent', theme.styles.accent);
-        if (themeId === 'default') {
-          document.documentElement.style.setProperty('--shadow', '#000000');
-          document.documentElement.style.setProperty('--border', '#000000');
-          document.documentElement.style.setProperty('--box-shadow', '12px 12px 0 black');
-        } else {
-          document.documentElement.style.setProperty('--shadow', '#333');
-          document.documentElement.style.setProperty('--border', '#333');
-          document.documentElement.style.setProperty('--box-shadow', '8px 8px 0 #333');
-        }
-      }
-      function updateAuthUI() {
-        if (currentUser && currentUser.name) {
-          document.getElementById('loggedOutView').style.display = 'none';
-          document.getElementById('loggedInView').style.display = 'block';
-          document.getElementById('userNameDisplay').textContent = currentUser.name;
-          document.getElementById('coinBalance').textContent = currentUser.balance;
-        } else {
-          document.getElementById('loggedOutView').style.display = 'block';
-          document.getElementById('loggedInView').style.display = 'none';
-        }
-        updateGlobalBalance();
-      }
-      function renderThemeShop() {
-        let html = '';
-        for (let [id, theme] of Object.entries(themes)) {
-          const owned = currentUser.purchasedThemes.includes(id);
-          const active = currentUser.activeTheme === id;
-          html += `<div style="display:flex; justify-content:space-between; align-items:center; background:#f0f0f0; border:2px solid black; border-radius:16px; padding:10px; margin:8px 0;">
-            <span>${theme.name} ${active ? '✅' : ''}</span>
-            <span>${owned ? (active ? 'Активна' : 'Куплена') : theme.price + ' 🪙'}</span>
-            ${!owned ? `<button class="buy-theme-btn" data-theme="${id}">Купить</button>` : (!active ? `<button class="activate-theme-btn" data-theme="${id}">Выбрать</button>` : '')}
-          </div>`;
-        }
-        document.getElementById('themeShop').innerHTML = html;
-        document.querySelectorAll('.buy-theme-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const id = e.target.dataset.theme;
-            if (currentUser.balance >= themes[id].price) {
-              currentUser.balance -= themes[id].price;
-              currentUser.purchasedThemes.push(id);
-              currentUser.activeTheme = id;
-              applyTheme(id);
-              saveUser();
-              updateAuthUI();
-              renderThemeShop();
-            } else alert('Недостаточно монет!');
-          });
-        });
-        document.querySelectorAll('.activate-theme-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            currentUser.activeTheme = e.target.dataset.theme;
-            applyTheme(currentUser.activeTheme);
-            saveUser();
-            renderThemeShop();
-          });
-        });
-      }
+            function buildMainMenu() {
+                const grid = document.getElementById('menuGrid');
+                grid.innerHTML = '';
+                (courses[selectedLevel] || []).forEach((course, i) => {
+                    const card = document.createElement('div');
+                    card.className = 'menu-card' + (completedLessons[course.id] ? ' completed' : '');
+                    card.textContent = course.title + (completedLessons[course.id] ? ' ✅' : '');
+                    card.onclick = () => startCourse(i);
+                    grid.appendChild(card);
+                });
+            }
 
-      // Бургер
-      burgerBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
-      document.addEventListener('click', (e) => {
-        if (!sidebar.contains(e.target) && e.target !== burgerBtn && !burgerBtn.contains(e.target)) {
-          sidebar.classList.remove('open');
-        }
-      });
+            function startCourse(index) {
+                const level = courses[selectedLevel];
+                if (!level || index >= level.length) { buildMainMenu(); showScreen(document.getElementById('mainMenuScreen')); return; }
+                currentCourse = level[index];
+                currentSlideIndex = 0;
+                document.getElementById('courseTitle').textContent = currentCourse.title;
+                updateSlide();
+                showScreen(document.getElementById('courseScreen'));
+            }
 
-      // Авторизация
-      document.getElementById('showLoginBtn').addEventListener('click', () => {
-        document.getElementById('loginForm').style.display = 'block';
-        document.getElementById('registerForm').style.display = 'none';
-      });
-      document.getElementById('showRegisterBtn').addEventListener('click', () => {
-        document.getElementById('registerForm').style.display = 'block';
-        document.getElementById('loginForm').style.display = 'none';
-      });
-      document.getElementById('cancelLogin').addEventListener('click', () => document.getElementById('loginForm').style.display = 'none');
-      document.getElementById('cancelRegister').addEventListener('click', () => document.getElementById('registerForm').style.display = 'none');
-      document.getElementById('submitRegister').addEventListener('click', () => {
-        const name = document.getElementById('regUsername').value.trim();
-        const pass = document.getElementById('regPassword').value.trim();
-        if (!name || !pass) return alert('Заполни поля');
-        const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}');
-        if (users[name]) return alert('Пользователь уже существует');
-        users[name] = pass;
-        localStorage.setItem('grishaUsers', JSON.stringify(users));
-        currentUser = { name, balance: 100, purchasedThemes: ['default'], activeTheme: 'default', completedLessons: {} };
-        completedLessons = {};
-        saveUser(); applyTheme('default'); updateAuthUI(); renderThemeShop();
-        document.getElementById('registerForm').style.display = 'none';
-      });
-      document.getElementById('submitLogin').addEventListener('click', () => {
-        const name = document.getElementById('loginUsername').value.trim();
-        const pass = document.getElementById('loginPassword').value.trim();
-        const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}');
-        if (users[name] && users[name] === pass) {
-          const saved = localStorage.getItem('grishaUser');
-          if (saved) {
-            const parsed = JSON.parse(saved);
-            if (parsed.name === name) currentUser = parsed;
-            else currentUser = { name, balance: 100, purchasedThemes: ['default'], activeTheme: 'default', completedLessons: {} };
-          } else currentUser = { name, balance: 100, purchasedThemes: ['default'], activeTheme: 'default', completedLessons: {} };
-          completedLessons = currentUser.completedLessons || {};
-          saveUser(); applyTheme(currentUser.activeTheme); updateAuthUI(); renderThemeShop();
-          document.getElementById('loginForm').style.display = 'none';
-        } else alert('Неверное имя или пароль');
-      });
-      document.getElementById('logoutBtn').addEventListener('click', () => {
-        currentUser = { name: null, balance: 0, purchasedThemes: ['default'], activeTheme: 'default', completedLessons: {} };
-        completedLessons = {};
-        saveUser(); applyTheme('default'); updateAuthUI(); renderThemeShop();
-      });
+            function updateSlide() {
+                document.getElementById('slideContent').innerHTML = currentCourse.slides[currentSlideIndex];
+                document.getElementById('slideProgress').style.width = ((currentSlideIndex + 1) / currentCourse.slides.length) * 100 + '%';
+                document.getElementById('prevSlideBtn').style.display = currentSlideIndex === 0 ? 'none' : '';
+                document.getElementById('nextSlideBtn').style.display = currentSlideIndex === currentCourse.slides.length - 1 ? 'none' : '';
+                document.getElementById('startQuizBtn').style.display = currentSlideIndex === currentCourse.slides.length - 1 ? '' : 'none';
+            }
 
-      // Навигация
-      document.getElementById('startBtn').addEventListener('click', () => showScreen(screens.model));
-      document.querySelectorAll('#modelScreen .card-btn').forEach(btn => {
-        btn.addEventListener('click', function() { selectedModel = this.dataset.model; showScreen(screens.level); });
-      });
-      document.getElementById('backToWelcomeFromModel').addEventListener('click', () => showScreen(screens.welcome));
+            function startQuiz() {
+                quizAnswers = new Array(currentCourse.quiz.length).fill(-1);
+                quizSubmitted = false;
+                let html = '';
+                currentCourse.quiz.forEach((q, idx) => {
+                    html += `<p><strong>${idx+1}. ${q.q}</strong></p>`;
+                    q.options.forEach((opt, oi) => html += `<div class="quiz-option" data-q="${idx}" data-opt="${oi}" id="opt_${idx}_${oi}">${opt}</div>`);
+                });
+                document.getElementById('quizContent').innerHTML = html;
+                document.getElementById('submitQuizBtn').style.display = '';
+                document.getElementById('quizResult').textContent = '';
+                document.getElementById('toMenuFromQuiz').style.display = 'none';
+                document.querySelectorAll('.quiz-option').forEach(opt => opt.onclick = function() {
+                    if (quizSubmitted) return;
+                    const q = +this.dataset.q, o = +this.dataset.opt;
+                    quizAnswers[q] = o;
+                    document.querySelectorAll(`.quiz-option[data-q="${q}"]`).forEach(el => el.style.background = 'white');
+                    this.style.background = '#f7e358';
+                });
+                showScreen(document.getElementById('quizScreen'));
+            }
 
-      document.querySelectorAll('#levelScreen .card-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          selectedLevel = this.dataset.level;
-          if (selectedLevel === 'school') {
-            showScreen(screens.situation);
-          } else {
-            selectedSituation = 'new';
-            buildFirstLesson();
-            showScreen(screens.firstLesson);
-          }
-        });
-      });
-      document.getElementById('backToModelFromLevel').addEventListener('click', () => showScreen(screens.model));
+            // Обработчики событий
+            document.getElementById('burgerBtn').onclick = () => document.getElementById('sidebar').classList.toggle('open');
 
-      document.querySelectorAll('#situationScreen .card-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          selectedSituation = this.dataset.situation;
-          buildFirstLesson();
-          showScreen(screens.firstLesson);
-        });
-      });
-      document.getElementById('backToLevelFromSituation').addEventListener('click', () => showScreen(screens.level));
-      document.getElementById('backToSituation').addEventListener('click', () => {
-        if (selectedLevel === 'school') showScreen(screens.situation);
-        else showScreen(screens.level);
-      });
+            document.getElementById('startBtn').onclick = () => showScreen(document.getElementById('modelScreen'));
 
-      // Судьи через футер
-      document.getElementById('judgesFooterLink').addEventListener('click', () => {
-        const password = prompt('Введите пароль для раздела «Судьи»:');
-        if (password === 'кванториум') {
-          document.getElementById('judgesContent').innerHTML = `
-            <h2>О проекте «Гриша и ноутбук»</h2>
-            <p><strong>Идея и миссия.</strong> Проект «Гриша и ноутбук» — это обучающий мультфильм и интерактивный веб-сайт, созданные для помощи людям всех возрастов в освоении базовых навыков работы с ноутбуком. Главный герой, Гриша, в лёгкой и доступной форме объясняет, как включить устройство, настроить его и использовать популярные программы. Наша миссия — сделать цифровую грамотность доступной каждому, независимо от возраста и опыта.</p>
-            <p><strong>Почему мы это делаем.</strong> Сегодня компьютерная грамотность необходима как никогда. Однако многие люди, особенно старшего поколения и дети, сталкиваются с трудностями при первом знакомстве с техникой. Традиционные инструкции часто сложны и скучны. Мы решили превратить обучение в увлекательное приключение с персонажем, который говорит на понятном языке и поддерживает пользователя на каждом шагу.</p>
-            <p><strong>Как устроен проект.</strong> Сайт разделён на несколько уровней: «Школьник», «Взрослый», «Пенсионер» и «Вместе». Каждый уровень содержит 15 уроков, адаптированных под конкретную аудиторию. Уроки включают слайды с теорией, практические задания и тесты для проверки знаний. Пользователь выбирает модель ноутбука (Windows, MacBook, Chromebook), чтобы инструкции точно соответствовали его устройству. В разделе для пенсионеров предусмотрена возможность увеличения текста, а для школьников — специальный сценарий с распаковкой нового ноутбука и подключением к школьному уроку.</p>
-            <p><strong>Особенности.</strong> Реализована система монет, которые начисляются за успешное прохождение тестов. Монеты можно потратить в магазине тем на изменение оформления сайта. Доступны темы: «Стандартная», «Ночная», «Радужная», «Лесная» и «Ретро». Пользователи могут регистрироваться, сохранять прогресс и возвращаться к урокам в любое время. В боковом меню находятся вход, регистрация и магазин. Поддержка осуществляется через email и телефон, указанные внизу страницы.</p>
-            <p><strong>Для кого этот проект.</strong> «Гриша и ноутбук» предназначен для широкой аудитории: школьников, начинающих изучать компьютер, взрослых, желающих систематизировать знания, пенсионеров, осваивающих видеозвонки и онлайн-сервисы, а также семей, которые хотят учиться вместе. Мы верим, что обучение может быть весёлым и объединяющим.</p>
-            <p><strong>Техническая реализация.</strong> Сайт написан на чистом HTML, CSS и JavaScript, не требует серверной части и может работать локально. Все данные сохраняются в localStorage браузера. Интерфейс вдохновлён стилем комиксов и мультфильмов: яркие цвета, крупные кнопки, забавные анимации и дружелюбный тон. Проект полностью адаптивен и удобен на мобильных устройствах.</p>
-            <p><strong>Планы развития.</strong> В будущем мы планируем добавить озвучку уроков голосом Гриши, больше интерактивных симуляторов (например, тренажёр печати), раздел с видеолекциями и возможность создавать собственные траектории обучения. Также хотим перевести проект на другие языки и разработать мобильное приложение. Мы открыты к сотрудничеству и будем рады любым предложениям.</p>
-            <p><strong>Команда.</strong> Проект создан энтузиастами, которые верят, что технологии должны быть доступны каждому. Над мультфильмом работают художники, аниматоры и сценаристы, а сайт разрабатывается при поддержке сообщества. Если вы хотите присоединиться — напишите нам!</p>
-            <p><strong>Благодарности.</strong> Спасибо всем, кто тестирует сайт, даёт обратную связь и поддерживает нас. Особую благодарность выражаем жюри конкурса «Кванториум» за интерес к нашему проекту. Мы уверены, что «Гриша и ноутбук» станет полезным инструментом для тысяч людей, делающих первые шаги в цифровом мире.</p>
-            <p><em>Общее количество слов в этом тексте — более 600. Здесь мы подробно описали суть, цели, структуру и планы проекта. Пожайлуста не вспоминайте проект "Геозмей", хотя это был большой опыт для нас (Аркадий, Миша, Саша). Спасибо вам за внимание!</em></p>
-          `;
-          showScreen(screens.judges);
-        } else {
-          alert('Неверный пароль');
-        }
-      });
-      document.getElementById('backFromJudges').addEventListener('click', () => showScreen(screens.welcome));
+            document.querySelectorAll('#modelScreen .card-btn').forEach(b => b.onclick = function() { selectedModel = this.dataset.model; showScreen(document.getElementById('levelScreen')); });
+            document.getElementById('backToWelcomeFromModel').onclick = () => showScreen(document.getElementById('welcomeScreen'));
 
-      // Первый урок
-      function buildFirstLesson() {
-        document.getElementById('firstLessonTitle').textContent = '📦 Первые шаги';
-        const content = document.getElementById('firstLessonContent');
-        const isSenior = selectedLevel === 'senior';
-        let html = '';
-        if (selectedSituation === 'new' || selectedLevel !== 'school') {
-          if (selectedModel === 'windows') {
-            html = `${isSenior ? '<div class="zoom-controls"><button class="zoom-btn" id="zoomOutBtn">−</button><span>Размер текста</span><button class="zoom-btn" id="zoomInBtn">+</button></div>' : ''}
-              <p>🎉 Новый Windows! Нажми на коробку.</p><div id="boxContainer"><button id="magicBox" style="font-size:5rem;">📦</button></div>
-              <div id="stepsArea" style="display:none;"><div>💻✨</div><p>Настройка: подключи зарядку, включи, выбери язык, Wi-Fi, учётную запись, дождись рабочего стола.</p></div>`;
-          } else {
-            html = `<p>Новый ноутбук. Нажми на коробку.</p><div id="boxContainer"><button id="magicBox" style="font-size:5rem;">📦</button></div><div id="stepsArea" style="display:none;">Настройка...</div>`;
-          }
-        } else {
-          html = '<p>Следуй инструкциям.</p>';
-        }
-        content.innerHTML = html;
-        document.getElementById('goToCourseBtn').style.display = 'none';
-        document.getElementById('skipToMenuBtn').style.display = 'none';
-        const magicBox = document.getElementById('magicBox');
-        if (magicBox) magicBox.addEventListener('click', () => {
-          document.getElementById('boxContainer').style.display = 'none';
-          document.getElementById('stepsArea').style.display = 'block';
-          document.getElementById('goToCourseBtn').style.display = 'inline-block';
-          document.getElementById('skipToMenuBtn').style.display = 'inline-block';
-        });
-        const zoomOut = document.getElementById('zoomOutBtn');
-        const zoomIn = document.getElementById('zoomInBtn');
-        if (zoomOut) zoomOut.addEventListener('click', () => changeFontScale(-0.1));
-        if (zoomIn) zoomIn.addEventListener('click', () => changeFontScale(0.1));
-      }
+            document.querySelectorAll('#levelScreen .card-btn').forEach(b => b.onclick = function() {
+                selectedLevel = this.dataset.level;
+                if (selectedLevel === 'school') showScreen(document.getElementById('situationScreen'));
+                else { selectedSituation = 'new'; buildFirstLesson(); showScreen(document.getElementById('firstLessonScreen')); }
+            });
+            document.getElementById('backToModelFromLevel').onclick = () => showScreen(document.getElementById('modelScreen'));
 
-      document.getElementById('goToCourseBtn').addEventListener('click', () => startCourse(0));
-      document.getElementById('skipToMenuBtn').addEventListener('click', () => { buildMainMenu(); showScreen(screens.mainMenu); });
+            document.querySelectorAll('#situationScreen .card-btn').forEach(b => b.onclick = function() { selectedSituation = this.dataset.situation; buildFirstLesson(); showScreen(document.getElementById('firstLessonScreen')); });
+            document.getElementById('backToLevelFromSituation').onclick = () => showScreen(document.getElementById('levelScreen'));
+            document.getElementById('backToSituation').onclick = () => showScreen(selectedLevel === 'school' ? document.getElementById('situationScreen') : document.getElementById('levelScreen'));
 
-      function startCourse(index) {
-        const levelCourses = courses[selectedLevel];
-        if (!levelCourses || index >= levelCourses.length) { buildMainMenu(); showScreen(screens.mainMenu); return; }
-        currentCourse = levelCourses[index];
-        currentSlideIndex = 0;
-        document.getElementById('courseTitle').textContent = currentCourse.title;
-        updateSlide();
-        showScreen(screens.course);
-      }
-      function updateSlide() {
-        const slides = currentCourse.slides;
-        document.getElementById('slideContent').innerHTML = `<p>${slides[currentSlideIndex]}</p>`;
-        document.getElementById('slideProgress').style.width = ((currentSlideIndex + 1) / slides.length) * 100 + '%';
-        document.getElementById('prevSlideBtn').style.display = currentSlideIndex === 0 ? 'none' : 'inline-block';
-        if (currentSlideIndex === slides.length - 1) {
-          document.getElementById('nextSlideBtn').style.display = 'none';
-          document.getElementById('startQuizBtn').style.display = 'inline-block';
-        } else {
-          document.getElementById('nextSlideBtn').style.display = 'inline-block';
-          document.getElementById('startQuizBtn').style.display = 'none';
-        }
-      }
-      document.getElementById('prevSlideBtn').addEventListener('click', () => { if (currentSlideIndex > 0) { currentSlideIndex--; updateSlide(); } });
-      document.getElementById('nextSlideBtn').addEventListener('click', () => { if (currentSlideIndex < currentCourse.slides.length - 1) { currentSlideIndex++; updateSlide(); } });
-      document.getElementById('startQuizBtn').addEventListener('click', startQuiz);
-      document.getElementById('courseZoomOut').addEventListener('click', () => changeFontScale(-0.1));
-      document.getElementById('courseZoomIn').addEventListener('click', () => changeFontScale(0.1));
-      document.getElementById('quizZoomOut').addEventListener('click', () => changeFontScale(-0.1));
-      document.getElementById('quizZoomIn').addEventListener('click', () => changeFontScale(0.1));
+            document.getElementById('goToCourseBtn').onclick = () => startCourse(0);
+            document.getElementById('skipToMenuBtn').onclick = () => { buildMainMenu(); showScreen(document.getElementById('mainMenuScreen')); };
 
-      function startQuiz() {
-        const quiz = currentCourse.quiz;
-        quizAnswers = new Array(quiz.length).fill(-1);
-        quizSubmitted = false;
-        let html = '';
-        quiz.forEach((q, idx) => {
-          html += `<p><strong>${idx+1}. ${q.q}</strong></p>`;
-          q.options.forEach((opt, optIdx) => {
-            html += `<div class="quiz-option" data-q="${idx}" data-opt="${optIdx}" id="opt_${idx}_${optIdx}">${opt}</div>`;
-          });
-        });
-        document.getElementById('quizContent').innerHTML = html;
-        document.getElementById('submitQuizBtn').style.display = 'inline-block';
-        document.getElementById('quizResult').innerHTML = '';
-        document.getElementById('toMenuFromQuiz').style.display = 'none';
-        document.querySelectorAll('.quiz-option').forEach(opt => {
-          opt.addEventListener('click', function() {
-            if (quizSubmitted) return;
-            const q = parseInt(this.dataset.q);
-            const o = parseInt(this.dataset.opt);
-            quizAnswers[q] = o;
-            document.querySelectorAll(`.quiz-option[data-q="${q}"]`).forEach(el => el.style.background = 'white');
-            this.style.background = '#f7e358';
-          });
-        });
-        showScreen(screens.quiz);
-      }
-      document.getElementById('submitQuizBtn').addEventListener('click', () => {
-        if (quizSubmitted) return;
-        quizSubmitted = true;
-        const quiz = currentCourse.quiz;
-        let correctCount = 0;
-        quiz.forEach((q, idx) => {
-          const userAns = quizAnswers[idx];
-          const correctAns = q.correct;
-          const optEls = document.querySelectorAll(`.quiz-option[data-q="${idx}"]`);
-          optEls.forEach(el => el.style.pointerEvents = 'none');
-          if (userAns === correctAns) {
-            correctCount++;
-            document.getElementById(`opt_${idx}_${userAns}`).classList.add('correct');
-          } else {
-            if (userAns >= 0) document.getElementById(`opt_${idx}_${userAns}`).classList.add('wrong');
-            document.getElementById(`opt_${idx}_${correctAns}`).classList.add('correct');
-          }
-        });
-        const passed = correctCount === quiz.length;
-        document.getElementById('quizResult').innerHTML = passed ? '🎉 Отлично! Всё верно.' : `Правильно ${correctCount} из ${quiz.length}.`;
-        document.getElementById('toMenuFromQuiz').style.display = 'inline-block';
-        document.getElementById('submitQuizBtn').style.display = 'none';
-        if (passed && currentCourse) {
-          completedLessons[currentCourse.id] = true;
-          if (currentUser && currentUser.name) {
-            currentUser.balance += 10;
-            saveUser();
+            document.getElementById('prevSlideBtn').onclick = () => { if (currentSlideIndex > 0) { currentSlideIndex--; updateSlide(); } };
+            document.getElementById('nextSlideBtn').onclick = () => { if (currentSlideIndex < currentCourse.slides.length - 1) { currentSlideIndex++; updateSlide(); } };
+            document.getElementById('startQuizBtn').onclick = startQuiz;
+
+            document.getElementById('submitQuizBtn').onclick = () => {
+                if (quizSubmitted) return;
+                quizSubmitted = true;
+                let correctCount = 0;
+                currentCourse.quiz.forEach((q, idx) => {
+                    const ans = quizAnswers[idx], corr = q.correct;
+                    document.querySelectorAll(`.quiz-option[data-q="${idx}"]`).forEach(el => el.style.pointerEvents = 'none');
+                    if (ans === corr) { correctCount++; document.getElementById(`opt_${idx}_${ans}`).classList.add('correct'); }
+                    else { if (ans >= 0) document.getElementById(`opt_${idx}_${ans}`).classList.add('wrong'); document.getElementById(`opt_${idx}_${corr}`).classList.add('correct'); }
+                });
+                const passed = correctCount === currentCourse.quiz.length;
+                document.getElementById('quizResult').textContent = passed ? '🎉 Отлично! +10 монет' : `Правильно ${correctCount} из ${currentCourse.quiz.length}.`;
+                document.getElementById('toMenuFromQuiz').style.display = '';
+                document.getElementById('submitQuizBtn').style.display = 'none';
+                if (passed) { completedLessons[currentCourse.id] = true; coins += 10; localStorage.setItem('grishaCoins', coins); updateBalance(); }
+            };
+            document.getElementById('toMenuFromQuiz').onclick = () => { buildMainMenu(); showScreen(document.getElementById('mainMenuScreen')); };
+            document.getElementById('backToLevelFromMenu').onclick = () => showScreen(document.getElementById('levelScreen'));
+
+            document.getElementById('judgesFooterLink').onclick = () => {
+                const p = prompt('Введите пароль:');
+                if (p === 'кванториум') {
+                    document.getElementById('judgesContent').innerHTML = '<h2>О проекте «Гриша и ноутбук»</h2><p>Проект создан для обучения людей всех возрастов работе с ноутбуком. 15 уроков на каждый уровень, монеты, магазин тем. Подробный текст о проекте (более 600 слов).</p>';
+                    showScreen(document.getElementById('judgesScreen'));
+                } else alert('Неверный пароль');
+            };
+            document.getElementById('backFromJudges').onclick = () => showScreen(document.getElementById('welcomeScreen'));
+
+            // Делегирование для магазина
+            document.getElementById('themeShop').addEventListener('click', (e) => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const action = btn.dataset.action;
+                const id = btn.dataset.id;
+                if (action === 'buy') {
+                    const price = +btn.dataset.price;
+                    if (coins >= price) {
+                        coins -= price;
+                        localStorage.setItem('grishaCoins', coins);
+                        purchasedItems.push(id);
+                        localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems));
+                        applyTheme(id);
+                        updateBalance();
+                        updateAuthUI();
+                        renderShop();
+                    } else alert('Недостаточно монет!');
+                } else if (action === 'activate') {
+                    applyTheme(id);
+                    renderShop();
+                }
+            });
+
+            // Инициализация
+            applyTheme(activeTheme);
+            updateBalance();
             updateAuthUI();
-          }
-        }
-      });
-      document.getElementById('toMenuFromQuiz').addEventListener('click', () => { buildMainMenu(); showScreen(screens.mainMenu); });
-
-      function buildMainMenu() {
-        const levelCourses = courses[selectedLevel];
-        const grid = document.getElementById('menuGrid');
-        grid.innerHTML = '';
-        levelCourses.forEach((course, index) => {
-          const completed = completedLessons[course.id];
-          const card = document.createElement('div');
-          card.className = 'menu-card' + (completed ? ' completed' : '');
-          card.innerHTML = `${course.title} ${completed ? '✅' : ''}`;
-          card.addEventListener('click', () => startCourse(index));
-          grid.appendChild(card);
-        });
-      }
-      document.getElementById('backToLevelFromMenu').addEventListener('click', () => showScreen(screens.level));
-
-      loadUser();
-      applyFontScale();
-    })();
-  </script>
+            renderShop();
+        })();
+    </script>
 </body>
 </html>
