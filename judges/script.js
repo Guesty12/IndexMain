@@ -19,7 +19,7 @@
         screen.classList.add('active');
     }
 
-    document.getElementById('BackBtn').onclick = () => window.location.href = "https://grisha-main.vercel.app";
+    document.getElementById('startBtn').onclick = () => window.location.href = "https://grisha-main.vercel.app";
     
     document.getElementById('judgesContent').innerHTML = `<h2>О проекте «Гриша и ноутбук»</h2>
     <p><strong>Идея и миссия.</strong> Проект «Гриша и ноутбук» — это обучающий мультфильм и интерактивный веб-сайт, созданные для помощи людям всех возрастов в освоении базовых навыков работы с ноутбуком. Главный герой, Гриша, в лёгкой и доступной форме объясняет, как включить устройство, настроить его и использовать популярные программы. Наша миссия — сделать цифровую грамотность доступной каждому, независимо от возраста и опыта.</p>
