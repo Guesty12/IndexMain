@@ -43,88 +43,6 @@
     <p style="font-size:0.9rem;"><strong>Авторы:</strong><br>👤 Александра<br>👤 Максим<br>👤 Артём<br>👤 Михаил<br>👤 Аркадий</p>
 </div>
 
-<div class="app" id="appContainer">
-    <div class="coin-widget">🪙 <span id="globalBalance">0</span></div>
-
-    <div id="welcomeScreen" class="screen active">
-       <img src="Images/GrishaNotebook.png" alt="Гриша с ноутбуком" width="150" height="200">
-        <div style="font-size:2rem; font-weight:800; background:#f7e358; padding:16px 28px; border:3px solid black; border-radius:28px; margin:20px 0;">ПРИВЕТ! Я ГРИША</div>
-        <button id="startBtn">НАЧАТЬ</button>
-    </div>
-
-    <div id="modelScreen" class="screen">
-        <h1>💻 ТВОЙ НОУТБУК</h1>
-        <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
-            <div class="card-btn" data-model="windows"><span>🪟</span> Windows</div>
-            <div class="card-btn" data-model="macbook"><span>🍎</span> MacBook</div>
-            <div class="card-btn" data-model="chromebook"><span>☁️</span> Chromebook</div>
-        </div>
-        <button id="backToWelcomeBtn">← Назад</button>
-    </div>
-
-    <div id="levelScreen" class="screen">
-        <h1>🎯 КТО ТЫ?</h1>
-        <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
-            <div class="card-btn" data-level="school"><span>🎒</span> Школьник</div>
-            <div class="card-btn" data-level="adult"><span>💼</span> Взрослый</div>
-            <div class="card-btn" data-level="senior"><span>🌅</span> Пенсионер</div>
-            <div class="card-btn" data-level="together"><span>👨‍👩‍👧</span> Вместе</div>
-        </div>
-        <button id="backToModelBtn">← Назад</button>
-    </div>
-
-    <div id="situationScreen" class="screen">
-        <h1>📋 СИТУАЦИЯ</h1>
-        <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
-            <div class="card-btn" data-situation="new"><span>📦</span> Новый</div>
-            <div class="card-btn" data-situation="used"><span>🔄</span> Б/у</div>
-            <div class="card-btn" data-situation="other"><span>🏫</span> Чужой</div>
-        </div>
-        <button id="backToLevelBtn">← Назад</button>
-    </div>
-
-    <div id="firstLessonScreen" class="screen">
-        <h1>📦 Первые шаги</h1>
-        <div class="lesson-box" id="firstLessonContent"></div>
-        <button id="goToCourseBtn" style="display:none;">Продолжить →</button>
-        <button id="skipToMenuBtn" style="display:none;">К урокам</button>
-        <div class="back-link" id="backToSituationBtn">← назад</div>
-    </div>
-
-    <div id="courseScreen" class="screen">
-        <h1 id="courseTitle">Урок</h1>
-        <div class="progress-bar"><div class="progress-fill" id="slideProgress"></div></div>
-        <div class="lesson-box" id="slideContent"></div>
-        <div style="display:flex; gap:10px;">
-            <button id="prevSlideBtn">← Назад</button>
-            <button id="nextSlideBtn">Вперёд →</button>
-        </div>
-        <button id="startQuizBtn" style="display:none;">Пройти тест</button>
-    </div>
-
-    <div id="quizScreen" class="screen">
-        <h1>Тест</h1>
-        <div class="lesson-box" id="quizContent"></div>
-        <button id="submitQuizBtn" style="display:none;">Проверить</button>
-        <div id="quizResult" style="font-weight:bold; margin:10px;"></div>
-        <button id="toMenuBtn" style="display:none;">В меню</button>
-    </div>
-
-    <div id="mainMenuScreen" class="screen">
-        <h1>📚 Мои уроки</h1>
-        <div class="menu-grid-wrapper">
-            <div class="menu-grid" id="menuGrid"></div>
-        </div>
-        <button id="backToLevelFromMenuBtn">← Назад</button>
-    </div>
-
-    <div id="judgesScreen" class="screen">
-        <h1>👨‍⚖️ Для судей</h1>
-        <div class="lesson-box" id="judgesContent"></div>
-        <button id="backFromJudgesBtn">← Назад</button>
-    </div>
-</div>
-
 <div class="settings-modal" id="settingsModal">
     <div class="settings-panel">
         <h3>⚙️ Настройки</h3>
@@ -147,7 +65,7 @@
 </div>
 
 <div class="footer">
-        📞 Поддержка: +7 (981) 849-6432 &nbsp;|&nbsp; ✉️ aarkadij401@gmail.com
+    📞 Поддержка: +7 (981) 849-6432 &nbsp;|&nbsp; ✉️ aarkadij401@gmail.com
 </div>
 
 <script src="/judges/script.js"></script>
