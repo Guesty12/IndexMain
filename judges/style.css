@@ -79,6 +79,7 @@ button:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--shado
 .screen { display: none; flex-direction: column; align-items: center; width: 100%; }
 .screen.active { display: flex; }
 h1 { font-size: 2rem; font-weight: 900; margin: 12px 0 8px; }
+h2 { font-size: 2rem; font-weight: 900; margin: 12px 0 8px; text-decoration: underline; }
 .lesson-box {
     background: #f9f9f9;
     border: 3px solid var(--border);
