@@ -72,12 +72,99 @@
         rainbow: { name: 'Радужная', price: 50, styles: { bg: 'linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3)', cardBg: '#ffffffdd', btnBg: '#ff6348', btnHover: '#ff4757', accent: '#fff' } }
     };
 
-    function updateBalance() { document.getElementById('globalBalance').textContent = coins; document.getElementById('coinBalance').textContent = coins; }
+    // ---- Shared helper functions ----
+
     function showScreen(screen) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); screen.classList.add('active'); updateBalance(); }
-    function applyTheme(id) { const t = themes[id] || themes.default; document.body.style.background = t.styles.bg; const root = document.documentElement.style; root.setProperty('--card-bg', t.styles.cardBg); root.setProperty('--btn-bg', t.styles.btnBg); root.setProperty('--btn-hover', t.styles.btnHover); root.setProperty('--accent', t.styles.accent); activeTheme = id; localStorage.setItem('grishaActiveTheme', id); }
-    function updateAuthUI() { if (currentUser && currentUser.name) { document.getElementById('loggedOutView').style.display = 'none'; document.getElementById('loggedInView').style.display = 'block'; document.getElementById('userNameDisplay').textContent = currentUser.name; document.getElementById('coinBalance').textContent = coins; } else { document.getElementById('loggedOutView').style.display = 'block'; document.getElementById('loggedInView').style.display = 'none'; } updateBalance(); }
-    function saveUser() { if (currentUser && currentUser.name) { currentUser.balance = coins; currentUser.purchasedItems = purchasedItems; currentUser.activeTheme = activeTheme; currentUser.completedLessons = completedLessons; currentUser.usedPromoCodes = usedPromoCodes; localStorage.setItem('grishaUser', JSON.stringify(currentUser)); } }
-    function renderShop() { let html = '<div class="shop-grid">'; for (let [id, theme] of Object.entries(themes)) { const owned = purchasedItems.includes(id); const active = activeTheme === id; html += `<div class="shop-item"><strong>${theme.name}</strong><div>${active ? '✅' : owned ? '✓' : theme.price + ' 🪙'}</div>${!owned ? `<button data-action="buy" data-id="${id}" data-price="${theme.price}">Купить</button>` : (!active ? `<button data-action="activate" data-id="${id}">Выбрать</button>` : '')}</div>`; } html += '</div>'; document.getElementById('themeShop').innerHTML = html; }
+
+    function updateBalance() {
+        const coinBalEl = document.getElementById('coinBalance');
+        if (coinBalEl) coinBalEl.textContent = coins;
+        const globalBalEl = document.getElementById('globalBalance');
+        if (globalBalEl) globalBalEl.textContent = coins;
+    }
+    function applyTheme(id) {
+        const t = themes[id] || themes.default;
+        document.body.style.background = t.styles.bg;
+        const root = document.documentElement.style;
+        root.setProperty('--card-bg', t.styles.cardBg);
+        root.setProperty('--btn-bg', t.styles.btnBg);
+        root.setProperty('--btn-hover', t.styles.btnHover);
+        root.setProperty('--accent', t.styles.accent);
+        activeTheme = id;
+        localStorage.setItem('grishaActiveTheme', id);
+    }
+    function updateAuthUI() {
+        if (currentUser && currentUser.name) {
+            document.getElementById('loggedOutView').style.display = 'none';
+            document.getElementById('loggedInView').style.display = 'block';
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+        } else {
+            document.getElementById('loggedOutView').style.display = 'block';
+            document.getElementById('loggedInView').style.display = 'none';
+        }
+        updateBalance();
+    }
+    function saveUser() {
+        if (currentUser && currentUser.name) {
+            currentUser.balance = coins;
+            currentUser.purchasedItems = purchasedItems;
+            currentUser.activeTheme = activeTheme;
+            currentUser.completedLessons = completedLessons;
+            currentUser.usedPromoCodes = usedPromoCodes;
+            localStorage.setItem('grishaUser', JSON.stringify(currentUser));
+        }
+    }
+    function renderShop() {
+        let html = '<div class="shop-grid">';
+        for (let [id, theme] of Object.entries(themes)) {
+            const owned = purchasedItems.includes(id);
+            const active = activeTheme === id;
+            html += `<div class="shop-item"><strong>${theme.name}</strong><div>${active ? '✅' : owned ? '✓' : theme.price + ' 🪙'}</div>${!owned ? `<button data-action="buy" data-id="${id}" data-price="${theme.price}">Купить</button>` : (!active ? `<button data-action="activate" data-id="${id}">Выбрать</button>` : '')}</div>`;
+        }
+        html += '</div>';
+        document.getElementById('themeShop').innerHTML = html;
+    }
+    function hideSettingsModal() { document.getElementById('settingsModal').classList.remove('active'); }
+    function handlePromoCode() {
+        if (!currentUser) { alert("Для использования промокода необходим аккаунт."); return; }
+        let code = prompt("Промокод:");
+        if (!code) return;
+        const norm = code.trim().toLowerCase();
+        const valid = { "газан69": 69, "кодразраба_0f8s7f9b2cd3": 99999 };
+        if (usedPromoCodes.includes(norm)) { alert("Промокод уже использован"); return; }
+        if (valid[norm] !== undefined) { coins += valid[norm]; localStorage.setItem('grishaCoins', coins); usedPromoCodes.push(norm); saveUser(); updateBalance(); alert(`+${valid[norm]} монет`); }
+        else alert("Неверный код");
+    }
+    function deleteAccount() {
+        if (!currentUser) { alert('Вы не авторизованы'); return; }
+        if (confirm("Вы уверены, что хотите удалить аккаунт?")) {
+            const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}');
+            delete users[currentUser.name];
+            localStorage.setItem('grishaUsers', JSON.stringify(users));
+            currentUser = null; completedLessons = {}; usedPromoCodes = []; coins = 0;
+            purchasedItems = ['default']; activeTheme = 'default';
+            localStorage.setItem('grishaCoins', '0');
+            localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems));
+            localStorage.setItem('grishaActiveTheme', 'default');
+            applyTheme('default'); updateAuthUI(); hideSettingsModal();
+            alert("Аккаунт успешно удалён");
+        }
+    }
+    function resetProgress() {
+        if (confirm("Вы уверены что хотите бросить прогресс?")) {
+            completedLessons = {}; coins = 0;
+            localStorage.setItem('grishaCoins', '0');
+            if (currentUser) { currentUser.completedLessons = {}; currentUser.balance = 0; saveUser(); }
+            updateBalance(); hideSettingsModal();
+            alert("Прогресс успешно сброшен");
+        }
+    }
+
+    function buildMainMenu() { const grid = document.getElementById('menuGrid'); grid.innerHTML = ''; const levelCourses = getCoursesForLevel(selectedLevel); levelCourses.forEach((course, i) => { const card = document.createElement('div'); card.className = 'menu-card' + (completedLessons[course.id] ? ' completed' : ''); card.textContent = course.title + (completedLessons[course.id] ? ' ✅' : ''); card.onclick = () => startCourse(i); grid.appendChild(card); }); }
+    function startCourse(index) { const level = getCoursesForLevel(selectedLevel); if (!level || index >= level.length) { buildMainMenu(); showScreen(document.getElementById('mainMenuScreen')); return; } currentCourse = level[index]; currentSlideIndex = 0; document.getElementById('courseTitle').textContent = currentCourse.title; updateSlide(); showScreen(document.getElementById('courseScreen')); }
+    function updateSlide() { document.getElementById('slideContent').innerHTML = currentCourse.slides[currentSlideIndex]; document.getElementById('slideProgress').style.width = ((currentSlideIndex + 1) / currentCourse.slides.length) * 100 + '%'; document.getElementById('prevSlideBtn').style.display = currentSlideIndex === 0 ? 'none' : ''; document.getElementById('nextSlideBtn').style.display = currentSlideIndex === currentCourse.slides.length - 1 ? 'none' : ''; document.getElementById('startQuizBtn').style.display = currentSlideIndex === currentCourse.slides.length - 1 ? '' : 'none'; }
+    function startQuiz() { quizAnswers = new Array(currentCourse.quiz.length).fill(-1); quizSubmitted = false; let html = ''; currentCourse.quiz.forEach((q, idx) => { html += `<p><strong>${idx+1}. ${q.q}</strong></p>`; q.options.forEach((opt, oi) => html += `<div class="quiz-option" data-q="${idx}" data-opt="${oi}" id="opt_${idx}_${oi}">${opt}</div>`); }); document.getElementById('quizContent').innerHTML = html; document.getElementById('submitQuizBtn').style.display = ''; document.getElementById('quizResult').textContent = ''; document.getElementById('toMenuBtn').style.display = 'none'; document.querySelectorAll('.quiz-option').forEach(opt => opt.onclick = function() { if (quizSubmitted) return; const q = +this.dataset.q, o = +this.dataset.opt; quizAnswers[q] = o; document.querySelectorAll(`.quiz-option[data-q="${q}"]`).forEach(el => el.style.background = 'white'); this.style.background = '#f7e358'; }); showScreen(document.getElementById('quizScreen')); }
+    
     
     // Восстановлена старая распаковка: коробка с картинкой 📦 и надпись "нажми на коробку"
     function buildFirstLesson() {
@@ -105,29 +192,24 @@
             document.getElementById('skipToMenuBtn').style.display = '';
         }
     }
-
-    function buildMainMenu() { const grid = document.getElementById('menuGrid'); grid.innerHTML = ''; const levelCourses = getCoursesForLevel(selectedLevel); levelCourses.forEach((course, i) => { const card = document.createElement('div'); card.className = 'menu-card' + (completedLessons[course.id] ? ' completed' : ''); card.textContent = course.title + (completedLessons[course.id] ? ' ✅' : ''); card.onclick = () => startCourse(i); grid.appendChild(card); }); }
-    function startCourse(index) { const level = getCoursesForLevel(selectedLevel); if (!level || index >= level.length) { buildMainMenu(); showScreen(document.getElementById('mainMenuScreen')); return; } currentCourse = level[index]; currentSlideIndex = 0; document.getElementById('courseTitle').textContent = currentCourse.title; updateSlide(); showScreen(document.getElementById('courseScreen')); }
-    function updateSlide() { document.getElementById('slideContent').innerHTML = currentCourse.slides[currentSlideIndex]; document.getElementById('slideProgress').style.width = ((currentSlideIndex + 1) / currentCourse.slides.length) * 100 + '%'; document.getElementById('prevSlideBtn').style.display = currentSlideIndex === 0 ? 'none' : ''; document.getElementById('nextSlideBtn').style.display = currentSlideIndex === currentCourse.slides.length - 1 ? 'none' : ''; document.getElementById('startQuizBtn').style.display = currentSlideIndex === currentCourse.slides.length - 1 ? '' : 'none'; }
-    function startQuiz() { quizAnswers = new Array(currentCourse.quiz.length).fill(-1); quizSubmitted = false; let html = ''; currentCourse.quiz.forEach((q, idx) => { html += `<p><strong>${idx+1}. ${q.q}</strong></p>`; q.options.forEach((opt, oi) => html += `<div class="quiz-option" data-q="${idx}" data-opt="${oi}" id="opt_${idx}_${oi}">${opt}</div>`); }); document.getElementById('quizContent').innerHTML = html; document.getElementById('submitQuizBtn').style.display = ''; document.getElementById('quizResult').textContent = ''; document.getElementById('toMenuBtn').style.display = 'none'; document.querySelectorAll('.quiz-option').forEach(opt => opt.onclick = function() { if (quizSubmitted) return; const q = +this.dataset.q, o = +this.dataset.opt; quizAnswers[q] = o; document.querySelectorAll(`.quiz-option[data-q="${q}"]`).forEach(el => el.style.background = 'white'); this.style.background = '#f7e358'; }); showScreen(document.getElementById('quizScreen')); }
-    function handlePromoCode() { if (!currentUser) { alert("Для использования промокода необходим аккаунт."); return; } let code = prompt("Промокод:"); if (!code) return; const norm = code.trim().toLowerCase(); const valid = { "газан69": 69, "кодразраба_0f8s7f9b2cd3": 99999 }; if (usedPromoCodes.includes(norm)) { alert("Промокод уже использован"); return; } if (valid[norm] !== undefined) { coins += valid[norm]; localStorage.setItem('grishaCoins', coins); usedPromoCodes.push(norm); saveUser(); updateBalance(); alert(`+${valid[norm]} монет`); } else alert("Неверный код"); }
-    function deleteAccount() { if (!currentUser) return; if (confirm("Удалить аккаунт?")) { const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}'); delete users[currentUser.name]; localStorage.setItem('grishaUsers', JSON.stringify(users)); currentUser = null; completedLessons = {}; usedPromoCodes = []; coins = 0; purchasedItems = ['default']; activeTheme = 'default'; localStorage.setItem('grishaCoins', '0'); localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems)); localStorage.setItem('grishaActiveTheme', 'default'); applyTheme('default'); updateAuthUI(); showScreen(document.getElementById('welcomeScreen')); alert("Удалено"); hideSettingsModal(); } }
-    function resetProgress() { if (confirm("Вы уверены что хотите бросить прогресс?")) { completedLessons = {}; coins = 0; localStorage.setItem('grishaCoins', '0'); if (currentUser) { currentUser.completedLessons = {}; currentUser.balance = 0; saveUser(); } updateBalance(); if (document.getElementById('mainMenuScreen').classList.contains('active')) buildMainMenu(); alert("Прогресс успешно сброшен"); hideSettingsModal(); } }
-    function hideSettingsModal() { document.getElementById('settingsModal').classList.remove('active'); }
     
+     // ---- Button handlers ----
     document.getElementById('burgerBtn').onclick = () => document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('settingsBtn').onclick = () => document.getElementById('settingsModal').classList.add('active');
     document.getElementById('closeSettingsBtn').onclick = hideSettingsModal;
-    document.getElementById('infoSiteBtn').onclick = () => alert("Гриша — обучение компьютеру!");
+    document.getElementById('infoSiteBtn').onclick = () => window.location.href = "https://grisha-main.vercel.app/help";
     document.getElementById('promoCodeBtn').onclick = handlePromoCode;
     document.getElementById('deleteAccountBtn').onclick = deleteAccount;
     document.getElementById('resetProgressBtn').onclick = resetProgress;
-    document.getElementById('startBtn').onclick = () => showScreen(document.getElementById('modelScreen'));
     document.querySelectorAll('#modelScreen .card-btn').forEach(b => b.onclick = function() { selectedModel = this.dataset.model; showScreen(document.getElementById('levelScreen')); });
-    document.getElementById('backToWelcomeBtn').onclick = () => showScreen(document.getElementById('welcomeScreen'));
     document.querySelectorAll('#levelScreen .card-btn').forEach(b => b.onclick = function() { selectedLevel = this.dataset.level; if (selectedLevel === 'school') showScreen(document.getElementById('situationScreen')); else { selectedSituation = 'new'; buildFirstLesson(); showScreen(document.getElementById('firstLessonScreen')); } });
-    document.getElementById('backToModelBtn').onclick = () => showScreen(document.getElementById('modelScreen'));
     document.querySelectorAll('#situationScreen .card-btn').forEach(b => b.onclick = function() { selectedSituation = this.dataset.situation; buildFirstLesson(); showScreen(document.getElementById('firstLessonScreen')); });
+    document.getElementById('startBtn').onclick = () => showScreen(document.getElementById('modelScreen'));
+    document.getElementById('backToWelcomeBtn').onclick = () => showScreen(document.getElementById('welcomeScreen'));
+
+    // ---- More level functions ----
+
+    document.getElementById('backToModelBtn').onclick = () => showScreen(document.getElementById('modelScreen'));
     document.getElementById('backToLevelBtn').onclick = () => showScreen(document.getElementById('levelScreen'));
     document.getElementById('backToSituationBtn').onclick = () => showScreen(selectedLevel === 'school' ? document.getElementById('situationScreen') : document.getElementById('levelScreen'));
     document.getElementById('goToCourseBtn').onclick = () => startCourse(0);
@@ -138,17 +220,78 @@
     document.getElementById('submitQuizBtn').onclick = () => { if (quizSubmitted) return; quizSubmitted = true; let correctCount = 0; currentCourse.quiz.forEach((q, idx) => { const ans = quizAnswers[idx], corr = q.correct; if (ans === corr) { correctCount++; document.getElementById(`opt_${idx}_${ans}`)?.classList.add('correct'); } else { if (ans >= 0) document.getElementById(`opt_${idx}_${ans}`)?.classList.add('wrong'); document.getElementById(`opt_${idx}_${corr}`)?.classList.add('correct'); } }); const passed = correctCount === currentCourse.quiz.length; document.getElementById('quizResult').textContent = passed ? '🎉 +10 монет' : `Правильно ${correctCount}/${currentCourse.quiz.length}`; document.getElementById('toMenuBtn').style.display = ''; document.getElementById('submitQuizBtn').style.display = 'none'; if (passed) { completedLessons[currentCourse.id] = true; coins += 10; localStorage.setItem('grishaCoins', coins); updateBalance(); saveUser(); } };
     document.getElementById('toMenuBtn').onclick = () => { buildMainMenu(); showScreen(document.getElementById('mainMenuScreen')); };
     document.getElementById('backToLevelFromMenuBtn').onclick = () => showScreen(document.getElementById('levelScreen'));
-    
-    // Авторизация
+    document.getElementById('backFromJudgesBtn').onclick = () => showScreen(document.getElementById('mainMenuScreen'));
+
+
+    // ---- Auth handlers ----
+    document.getElementById('judgesFooterLink').onclick = () => { const p = prompt('Пароль:'); if (p === 'кванториум') window.location.href = "https://grisha-main.vercel.app/help"; else if (p === '67') window.location.href = "https://youtu.be/yo5CILhgvT4?si=o3fOJvdXZUMKj8Ft"; else alert('Неверный пароль'); };
     document.getElementById('showLoginBtn').onclick = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; };
     document.getElementById('showRegisterBtn').onclick = () => { document.getElementById('registerForm').style.display = 'block'; document.getElementById('loginForm').style.display = 'none'; };
     document.getElementById('cancelLoginBtn').onclick = () => document.getElementById('loginForm').style.display = 'none';
     document.getElementById('cancelRegisterBtn').onclick = () => document.getElementById('registerForm').style.display = 'none';
-    document.getElementById('submitRegisterBtn').onclick = () => { const name = document.getElementById('regUsername').value.trim(); const pass = document.getElementById('regPassword').value.trim(); if (!name || !pass) { alert('Заполните'); return; } const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}'); if (users[name]) { alert('Есть'); return; } users[name] = pass; localStorage.setItem('grishaUsers', JSON.stringify(users)); currentUser = { name, balance: 0, purchasedItems: ['default'], activeTheme: 'default', completedLessons: {}, usedPromoCodes: [] }; coins = 0; completedLessons = {}; usedPromoCodes = []; purchasedItems = ['default']; activeTheme = 'default'; saveUser(); updateAuthUI(); applyTheme('default'); document.getElementById('registerForm').style.display = 'none'; alert('Добро пожаловать!'); };
-    document.getElementById('submitLoginBtn').onclick = () => { const name = document.getElementById('loginUsername').value.trim(); const pass = document.getElementById('loginPassword').value.trim(); const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}'); if (!users[name] || users[name] !== pass) { alert('Неверно'); return; } const saved = localStorage.getItem('grishaUser'); if (saved && JSON.parse(saved).name === name) { const p = JSON.parse(saved); currentUser = p; coins = p.balance || 0; completedLessons = p.completedLessons || {}; purchasedItems = p.purchasedItems || ['default']; activeTheme = p.activeTheme || 'default'; usedPromoCodes = p.usedPromoCodes || []; } else { currentUser = { name, balance: 0, purchasedItems: ['default'], activeTheme: 'default', completedLessons: {}, usedPromoCodes: [] }; coins = 0; completedLessons = {}; usedPromoCodes = []; } localStorage.setItem('grishaCoins', coins); localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems)); localStorage.setItem('grishaActiveTheme', activeTheme); applyTheme(activeTheme); updateAuthUI(); saveUser(); document.getElementById('loginForm').style.display = 'none'; alert('Вход выполнен'); };
-    document.getElementById('logoutBtn').onclick = () => { currentUser = null; completedLessons = {}; usedPromoCodes = []; coins = 0; purchasedItems = ['default']; activeTheme = 'default'; localStorage.setItem('grishaCoins', '0'); localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems)); localStorage.setItem('grishaActiveTheme', 'default'); applyTheme('default'); updateAuthUI(); showScreen(document.getElementById('welcomeScreen')); };
-    document.getElementById('judgesFooterLink').onclick = () => { const p = prompt('Пароль:'); if (p === 'кванториум') window.location.href = "https://grisha-main.vercel.app/judges"; else if (p === '67') window.location.href = "https://youtu.be/yo5CILhgvT4?si=o3fOJvdXZUMKj8Ft"; else alert('Неверно'); };
-    document.getElementById('themeShop').addEventListener('click', (e) => { const btn = e.target.closest('button'); if (!btn) return; const action = btn.dataset.action, id = btn.dataset.id; if (action === 'buy') { const price = +btn.dataset.price; if (coins >= price) { coins -= price; localStorage.setItem('grishaCoins', coins); purchasedItems.push(id); localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems)); applyTheme(id); updateBalance(); updateAuthUI(); renderShop(); if(currentUser) saveUser(); } else alert('Недостаточно монет'); } else if (action === 'activate') { applyTheme(id); renderShop(); if(currentUser) saveUser(); } });
-    
+    document.getElementById('submitRegisterBtn').onclick = () => {
+        const name = document.getElementById('regUsername').value.trim();
+        const pass = document.getElementById('regPassword').value.trim();
+        if (!name || !pass) { alert('Отсутствует имя или пароль.'); return; }
+        const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}');
+        if (users[name]) { alert('Аккаунт с таким именем уже существует'); return; }
+        users[name] = pass; localStorage.setItem('grishaUsers', JSON.stringify(users));
+        currentUser = { name, balance: 0, purchasedItems: ['default'], activeTheme: 'default', completedLessons: {}, usedPromoCodes: [] };
+        coins = 0; completedLessons = {}; usedPromoCodes = []; purchasedItems = ['default']; activeTheme = 'default';
+        saveUser(); updateAuthUI(); applyTheme('default');
+        document.getElementById('registerForm').style.display = 'none';
+        alert('Добро пожаловать!');
+    };
+    document.getElementById('submitLoginBtn').onclick = () => {
+        const name = document.getElementById('loginUsername').value.trim();
+        const pass = document.getElementById('loginPassword').value.trim();
+        const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}');
+        if (!users[name] || users[name] !== pass) { alert('Отсутствует имя или пароль.'); return; }
+        const saved = localStorage.getItem('grishaUser');
+        if (saved && JSON.parse(saved).name === name) {
+            const p = JSON.parse(saved);
+            currentUser = p; coins = p.balance || 0; completedLessons = p.completedLessons || {};
+            purchasedItems = p.purchasedItems || ['default']; activeTheme = p.activeTheme || 'default'; usedPromoCodes = p.usedPromoCodes || [];
+        } else {
+            currentUser = { name, balance: 0, purchasedItems: ['default'], activeTheme: 'default', completedLessons: {}, usedPromoCodes: [] };
+            coins = 0; completedLessons = {}; usedPromoCodes = [];
+        }
+        localStorage.setItem('grishaCoins', coins);
+        localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems));
+        localStorage.setItem('grishaActiveTheme', activeTheme);
+        applyTheme(activeTheme); updateAuthUI(); saveUser();
+        document.getElementById('loginForm').style.display = 'none';
+        alert('Вход успешно выполнен');
+    };
+    document.getElementById('logoutBtn').onclick = () => {
+        currentUser = null; completedLessons = {}; usedPromoCodes = []; coins = 0;
+        purchasedItems = ['default']; activeTheme = 'default';
+        localStorage.setItem('grishaCoins', '0');
+        localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems));
+        localStorage.setItem('grishaActiveTheme', 'default');
+        applyTheme('default'); updateAuthUI();
+    };
+    document.getElementById('themeShop').addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        const action = btn.dataset.action, id = btn.dataset.id;
+        if (action === 'buy') {
+            const price = +btn.dataset.price;
+            if (coins >= price) { coins -= price; localStorage.setItem('grishaCoins', coins); purchasedItems.push(id); localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems)); applyTheme(id); updateBalance(); updateAuthUI(); renderShop(); if (currentUser) saveUser(); }
+            else alert('Недостаточно монет');
+        } else if (action === 'activate') { applyTheme(id); renderShop(); if (currentUser) saveUser(); }
+    });
+
+    // ---- Init: restore session ----
+    const savedUser = localStorage.getItem('grishaUser');
+    if (savedUser) {
+        const p = JSON.parse(savedUser);
+        currentUser = p; coins = p.balance || 0;
+        completedLessons = p.completedLessons || {};
+        purchasedItems = p.purchasedItems || ['default'];
+        activeTheme = p.activeTheme || 'default';
+        usedPromoCodes = p.usedPromoCodes || [];
+    }
+
     applyTheme(activeTheme); updateBalance(); updateAuthUI(); renderShop();
 })();
