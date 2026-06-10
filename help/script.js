@@ -56,9 +56,6 @@
     function deleteAccount() { if (!currentUser) { alert('Вы не авторизованы'); return; } if (confirm("Вы уверены, что хотите удалить аккаунт?")) { const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}'); delete users[currentUser.name]; localStorage.setItem('grishaUsers', JSON.stringify(users)); currentUser = null; completedLessons = {}; usedPromoCodes = []; coins = 0; purchasedItems = ['default']; activeTheme = 'default'; localStorage.setItem('grishaCoins', '0'); localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems)); localStorage.setItem('grishaActiveTheme', 'default'); applyTheme('default'); updateAuthUI(); showScreen(document.getElementById('welcomeScreen')); alert("Аккаунт успешно удалён"); hideSettingsModal(); } }
     function resetProgress() { if (confirm("Вы уверены что хотите бросить прогресс?")) { completedLessons = {}; coins = 0; localStorage.setItem('grishaCoins', '0'); if (currentUser) { currentUser.completedLessons = {}; currentUser.balance = 0; saveUser(); } updateBalance(); if (document.getElementById('mainMenuScreen').classList.contains('active')) buildMainMenu(); alert("Прогресс успешно сброшен"); hideSettingsModal(); } }
     function hideSettingsModal() { document.getElementById('settingsModal').classList.remove('active'); }
-    
-    // ---- Order button ----
-    document.getElementById('OrderLink').onclick = () => alert('В настоящее время эта функция находится в разработке. Следите за новостями в нашей группе в ВК')
   
     // ---- Main page based functions ----
     document.getElementById('burgerBtn').onclick = () => document.getElementById('sidebar').classList.toggle('open');
