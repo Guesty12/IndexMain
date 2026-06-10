@@ -62,6 +62,7 @@
     document.getElementById('promoCodeBtn').onclick = handlePromoCode;
     document.getElementById('deleteAccountBtn').onclick = deleteAccount;
     document.getElementById('resetProgressBtn').onclick = resetProgress;
+    document.querySelectorAll('#modelScreen .card-btn').forEach(b => b.onclick = function() { selectedModel = this.dataset.model; showScreen(document.getElementById('levelScreen')); });
     
     // Авторизация
     document.getElementById('showLoginBtn').onclick = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; };
