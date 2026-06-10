@@ -63,6 +63,18 @@
     document.getElementById('deleteAccountBtn').onclick = deleteAccount;
     document.getElementById('resetProgressBtn').onclick = resetProgress;
     document.querySelectorAll('#modelScreen .card-btn').forEach(b => b.onclick = function() { selectedModel = this.dataset.model; showScreen(document.getElementById('levelScreen')); });
+    document.getElementById('backToWelcomeBtn').onclick = () => showScreen(document.getElementById('welcomeScreen'));
+    document.getElementById('backToModelBtn').onclick = () => showScreen(document.getElementById('modelScreen'));
+    document.getElementById('backToLevelBtn').onclick = () => showScreen(document.getElementById('levelScreen'));
+    document.getElementById('backToSituationBtn').onclick = () => showScreen(selectedLevel === 'school' ? document.getElementById('situationScreen') : document.getElementById('levelScreen'));
+    document.getElementById('goToCourseBtn').onclick = () => startCourse(0);
+    document.getElementById('skipToMenuBtn').onclick = () => { buildMainMenu(); showScreen(document.getElementById('mainMenuScreen')); };
+    document.getElementById('prevSlideBtn').onclick = () => { if (currentSlideIndex > 0) { currentSlideIndex--; updateSlide(); } };
+    document.getElementById('nextSlideBtn').onclick = () => { if (currentSlideIndex < currentCourse.slides.length - 1) { currentSlideIndex++; updateSlide(); } };
+    document.getElementById('startQuizBtn').onclick = startQuiz;
+    document.getElementById('submitQuizBtn').onclick = () => { if (quizSubmitted) return; quizSubmitted = true; let correctCount = 0; currentCourse.quiz.forEach((q, idx) => { const ans = quizAnswers[idx], corr = q.correct; if (ans === corr) { correctCount++; document.getElementById(`opt_${idx}_${ans}`)?.classList.add('correct'); } else { if (ans >= 0) document.getElementById(`opt_${idx}_${ans}`)?.classList.add('wrong'); document.getElementById(`opt_${idx}_${corr}`)?.classList.add('correct'); } }); const passed = correctCount === currentCourse.quiz.length; document.getElementById('quizResult').textContent = passed ? '🎉 +10 монет' : `Правильно ${correctCount}/${currentCourse.quiz.length}`; document.getElementById('toMenuBtn').style.display = ''; document.getElementById('submitQuizBtn').style.display = 'none'; if (passed) { completedLessons[currentCourse.id] = true; coins += 10; localStorage.setItem('grishaCoins', coins); updateBalance(); saveUser(); } };
+    document.getElementById('toMenuBtn').onclick = () => { buildMainMenu(); showScreen(document.getElementById('mainMenuScreen')); };
+    document.getElementById('backToLevelFromMenuBtn').onclick = () => showScreen(document.getElementById('levelScreen'));
     
     // Авторизация
     document.getElementById('showLoginBtn').onclick = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; };
