@@ -225,51 +225,14 @@
 
     // ---- Auth handlers ----
     document.getElementById('judgesFooterLink').onclick = () => { const p = prompt('Пароль:'); if (p === 'кванториум') window.location.href = "https://grisha-main.vercel.app/help"; else if (p === '67') window.location.href = "https://youtu.be/yo5CILhgvT4?si=o3fOJvdXZUMKj8Ft"; else alert('Неверный пароль'); };
-    document.getElementById('showLoginBtn').onclick = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; };
-    document.getElementById('showRegisterBtn').onclick = () => { document.getElementById('registerForm').style.display = 'block'; document.getElementById('loginForm').style.display = 'none'; };
-    document.getElementById('cancelLoginBtn').onclick = () => document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('cancelRegisterBtn').onclick = () => document.getElementById('registerForm').style.display = 'none';
-    document.getElementById('submitRegisterBtn').onclick = () => {
-        const name = document.getElementById('regUsername').value.trim();
-        const pass = document.getElementById('regPassword').value.trim();
-        if (!name || !pass) { alert('Отсутствует имя или пароль.'); return; }
-        const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}');
-        if (users[name]) { alert('Аккаунт с таким именем уже существует'); return; }
-        users[name] = pass; localStorage.setItem('grishaUsers', JSON.stringify(users));
-        currentUser = { name, balance: 0, purchasedItems: ['default'], activeTheme: 'default', completedLessons: {}, usedPromoCodes: [] };
-        coins = 0; completedLessons = {}; usedPromoCodes = []; purchasedItems = ['default']; activeTheme = 'default';
-        saveUser(); updateAuthUI(); applyTheme('default');
-        document.getElementById('registerForm').style.display = 'none';
-        alert('Добро пожаловать!');
-    };
-    document.getElementById('submitLoginBtn').onclick = () => {
-        const name = document.getElementById('loginUsername').value.trim();
-        const pass = document.getElementById('loginPassword').value.trim();
-        const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}');
-        if (!users[name] || users[name] !== pass) { alert('Отсутствует имя или пароль.'); return; }
-        const saved = localStorage.getItem('grishaUser');
-        if (saved && JSON.parse(saved).name === name) {
-            const p = JSON.parse(saved);
-            currentUser = p; coins = p.balance || 0; completedLessons = p.completedLessons || {};
-            purchasedItems = p.purchasedItems || ['default']; activeTheme = p.activeTheme || 'default'; usedPromoCodes = p.usedPromoCodes || [];
-        } else {
-            currentUser = { name, balance: 0, purchasedItems: ['default'], activeTheme: 'default', completedLessons: {}, usedPromoCodes: [] };
-            coins = 0; completedLessons = {}; usedPromoCodes = [];
-        }
-        localStorage.setItem('grishaCoins', coins);
-        localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems));
-        localStorage.setItem('grishaActiveTheme', activeTheme);
-        applyTheme(activeTheme); updateAuthUI(); saveUser();
-        document.getElementById('loginForm').style.display = 'none';
-        alert('Вход успешно выполнен');
-    };
     document.getElementById('logoutBtn').onclick = () => {
-        currentUser = null; completedLessons = {}; usedPromoCodes = []; coins = 0;
-        purchasedItems = ['default']; activeTheme = 'default';
+        // Clear the saved session entirely so the login page doesn't
+        // auto-redirect straight back in.
+        localStorage.removeItem('grishaUser');
         localStorage.setItem('grishaCoins', '0');
-        localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems));
+        localStorage.setItem('grishaPurchasedItems', JSON.stringify(['default']));
         localStorage.setItem('grishaActiveTheme', 'default');
-        applyTheme('default'); updateAuthUI();
+        window.location.href = "https://grisha-main.vercel.app/login";
     };
     document.getElementById('themeShop').addEventListener('click', (e) => {
         const btn = e.target.closest('button');
