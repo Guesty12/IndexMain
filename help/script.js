@@ -1,6 +1,7 @@
 (function() {
     // ---- Auth gate: no saved session means no account, send to login ----
-    if (!localStorage.getItem('grishaUser')) {
+    const savedUser = localStorage.getItem('grishaUser');
+    if (!savedUser) {
         window.location.href = "https://grisha-main.vercel.app/login";
         return;
     }
@@ -18,6 +19,17 @@
     let purchasedItems = JSON.parse(localStorage.getItem('grishaPurchasedItems') || '["default"]');
     let activeTheme = localStorage.getItem('grishaActiveTheme') || 'default';
     let usedPromoCodes = [];
+
+    // ---- Restore the session the gate above just confirmed exists ----
+    {
+        const p = JSON.parse(savedUser);
+        currentUser = p;
+        coins = p.balance || 0;
+        completedLessons = p.completedLessons || {};
+        purchasedItems = p.purchasedItems || ['default'];
+        activeTheme = p.activeTheme || 'default';
+        usedPromoCodes = p.usedPromoCodes || [];
+    }
 
     const themes = {
         default: { name: 'Стандартная', price: 0, styles: { bg: '#2ecc40', cardBg: '#ffffff', btnBg: '#2ecc40', btnHover: '#27ae36', accent: '#f7e358' } },
