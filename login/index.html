@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>Login</title>
+<link rel="stylesheet" href="/login/style.css">
+</head>
+<body>
+
+<div class="app" id="appCard">
+
+    <div class="title-badge">Войдите или создатите аккаунт</div>
+
+    <div class="auth-toggle">
+        <button id="showLoginBtn" class="active">Войти</button>
+        <button id="showRegisterBtn">Создать аккаунт</button>
+    </div>
+
+    <div class="form-panel active" id="loginForm">
+        <h3>Войти</h3>
+        <input type="text" id="loginUsername" placeholder="Username">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button id="submitLoginBtn">Готово</button>
+        <div class="error-msg" id="loginError"></div>
+    </div>
+
+    <div class="form-panel" id="registerForm">
+        <h3>Регистрация</h3>
+        <input type="text" id="regUsername" placeholder="Choose a username">
+        <input type="password" id="regPassword" placeholder="Choose a password">
+        <button id="submitRegisterBtn">Готово</button>
+        <div class="error-msg" id="registerError"></div>
+    </div>
+
+</div>
+
+<script src="/login/script.js"></script>
+
+</body>
+</html>
