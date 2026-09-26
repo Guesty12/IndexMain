@@ -1,4 +1,10 @@
 (function() {
+    // ---- Auth gate: no saved session means no account, send to login ----
+    if (!localStorage.getItem('grishaUser')) {
+        window.location.href = "https://grisha-main.vercel.app/login";
+        return;
+    }
+
     let selectedModel = 'windows';
     let selectedLevel = 'school';
     let selectedSituation = 'new';
@@ -64,14 +70,15 @@
     document.getElementById('deleteAccountBtn').onclick = deleteAccount;
     document.getElementById('resetProgressBtn').onclick = resetProgress;
 
-    // Авторизация
-    document.getElementById('showLoginBtn').onclick = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; };
-    document.getElementById('showRegisterBtn').onclick = () => { document.getElementById('registerForm').style.display = 'block'; document.getElementById('loginForm').style.display = 'none'; };
-    document.getElementById('cancelLoginBtn').onclick = () => document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('cancelRegisterBtn').onclick = () => document.getElementById('registerForm').style.display = 'none';
-    document.getElementById('submitRegisterBtn').onclick = () => { const name = document.getElementById('regUsername').value.trim(); const pass = document.getElementById('regPassword').value.trim(); if (!name || !pass) { alert('Отсутствует имя или пароль.'); return; } const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}'); if (users[name]) { alert('Есть'); return; } users[name] = pass; localStorage.setItem('grishaUsers', JSON.stringify(users)); currentUser = { name, balance: 0, purchasedItems: ['default'], activeTheme: 'default', completedLessons: {}, usedPromoCodes: [] }; coins = 0; completedLessons = {}; usedPromoCodes = []; purchasedItems = ['default']; activeTheme = 'default'; saveUser(); updateAuthUI(); applyTheme('default'); document.getElementById('registerForm').style.display = 'none'; alert('Добро пожаловать!'); };
-    document.getElementById('submitLoginBtn').onclick = () => { const name = document.getElementById('loginUsername').value.trim(); const pass = document.getElementById('loginPassword').value.trim(); const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}'); if (!users[name] || users[name] !== pass) { alert('Неверно'); return; } const saved = localStorage.getItem('grishaUser'); if (saved && JSON.parse(saved).name === name) { const p = JSON.parse(saved); currentUser = p; coins = p.balance || 0; completedLessons = p.completedLessons || {}; purchasedItems = p.purchasedItems || ['default']; activeTheme = p.activeTheme || 'default'; usedPromoCodes = p.usedPromoCodes || []; } else { currentUser = { name, balance: 0, purchasedItems: ['default'], activeTheme: 'default', completedLessons: {}, usedPromoCodes: [] }; coins = 0; completedLessons = {}; usedPromoCodes = []; } localStorage.setItem('grishaCoins', coins); localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems)); localStorage.setItem('grishaActiveTheme', activeTheme); applyTheme(activeTheme); updateAuthUI(); saveUser(); document.getElementById('loginForm').style.display = 'none'; alert('Вход выполнен'); };
-    document.getElementById('logoutBtn').onclick = () => { currentUser = null; completedLessons = {}; usedPromoCodes = []; coins = 0; purchasedItems = ['default']; activeTheme = 'default'; localStorage.setItem('grishaCoins', '0'); localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems)); localStorage.setItem('grishaActiveTheme', 'default'); applyTheme('default'); updateAuthUI(); showScreen(document.getElementById('judgesScreen')); };
+    document.getElementById('logoutBtn').onclick = () => {
+        // Clear the saved session entirely so the login page doesn't
+        // auto-redirect straight back in.
+        localStorage.removeItem('grishaUser');
+        localStorage.setItem('grishaCoins', '0');
+        localStorage.setItem('grishaPurchasedItems', JSON.stringify(['default']));
+        localStorage.setItem('grishaActiveTheme', 'default');
+        window.location.href = "https://grisha-main.vercel.app/login";
+    };
     document.getElementById('themeShop').addEventListener('click', (e) => { const btn = e.target.closest('button'); if (!btn) return; const action = btn.dataset.action, id = btn.dataset.id; if (action === 'buy') { const price = +btn.dataset.price; if (coins >= price) { coins -= price; localStorage.setItem('grishaCoins', coins); purchasedItems.push(id); localStorage.setItem('grishaPurchasedItems', JSON.stringify(purchasedItems)); applyTheme(id); updateBalance(); updateAuthUI(); renderShop(); if(currentUser) saveUser(); } else alert('Недостаточно монет'); } else if (action === 'activate') { applyTheme(id); renderShop(); if(currentUser) saveUser(); } });
     
     applyTheme(activeTheme); updateBalance(); updateAuthUI(); renderShop();
