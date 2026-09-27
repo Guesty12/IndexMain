@@ -27,9 +27,9 @@
         errEl.textContent = '';
         const name = document.getElementById('regUsername').value.trim();
         const pass = document.getElementById('regPassword').value.trim();
-        if (!name || !pass) { errEl.textContent = 'Missing username or password.'; return; }
+        if (!name || !pass) { errEl.textContent = 'Отсутствует логин или пароль.'; return; }
         const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}');
-        if (users[name]) { errEl.textContent = 'An account with that name already exists.'; return; }
+        if (users[name]) { errEl.textContent = 'Аккаунт с таким именем уже существует.'; return; }
         users[name] = pass;
         localStorage.setItem('grishaUsers', JSON.stringify(users));
 
@@ -49,7 +49,7 @@
         const name = document.getElementById('loginUsername').value.trim();
         const pass = document.getElementById('loginPassword').value.trim();
         const users = JSON.parse(localStorage.getItem('grishaUsers') || '{}');
-        if (!users[name] || users[name] !== pass) { errEl.textContent = 'Wrong username or password.'; return; }
+        if (!users[name] || users[name] !== pass) { errEl.textContent = 'Неправильное имя или пароль.'; return; }
 
         const saved = localStorage.getItem('grishaUser');
         let profile;
